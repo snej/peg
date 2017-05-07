@@ -151,7 +151,7 @@ If the above grammar is placed in the file **username.peg**, running the command
 peg −o username.c username.peg
 
 will save the corresponding parser in the file **username.c**. To create a complete program this parser could be included by a C program as follows.
-
+```c
 #include <stdio.h> /* printf(), putchar() */  
 #include <unistd.h> /* getlogin() */
 
@@ -163,7 +163,7 @@ while (yyparse()) /* repeat until EOF */
 ;  
 return 0;  
 }
-
+```
 ## PEG GRAMMARS<a name="PEG_GRAMMARS"></a>
 
 A grammar consists of a set of named rules.
