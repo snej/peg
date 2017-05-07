@@ -5,17 +5,17 @@
 [DESCRIPTION](#DESCRIPTION)  
 [OPTIONS](#OPTIONS)  
 [A SIMPLE EXAMPLE](#SIMPLE_EXAMPLE)  
-[PEG GRAMMARS](#PEG GRAMMARS)  
-[PEG GRAMMAR FOR PEG GRAMMARS](#PEG GRAMMAR FOR PEG GRAMMARS)  
-[LEG GRAMMARS](#LEG GRAMMARS)  
-[LEG EXAMPLE: A DESK CALCULATOR](#LEG EXAMPLE: A DESK CALCULATOR)  
-[LEG GRAMMAR FOR LEG GRAMMARS](#LEG GRAMMAR FOR LEG GRAMMARS)  
-[CUSTOMISING THE PARSER](#CUSTOMISING THE PARSER)  
-[LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT)  
+[PEG GRAMMARS](#PEG_GRAMMARS)  
+[PEG GRAMMAR FOR PEG GRAMMARS](#PEG_GRAMMAR_FOR_PEG_GRAMMARS)  
+[LEG GRAMMARS](#LEG_GRAMMARS)  
+[LEG EXAMPLE: A DESK CALCULATOR](#LEG_EXAMPLE_A_DESK_CALCULATOR)  
+[LEG GRAMMAR FOR LEG GRAMMARS](#LEG_GRAMMAR_FOR_LEG_GRAMMARS)  
+[CUSTOMISING THE PARSER](#CUSTOMISING_THE_PARSER)  
+[LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG_EXAMPLE_EXTENDING_THE_PARSERS_CONTEXT)  
 [DIAGNOSTICS](#DIAGNOSTICS)  
 [CAVEATS](#CAVEATS)  
 [BUGS](#BUGS)  
-[SEE ALSO](#SEE ALSO)  
+[SEE ALSO](#SEE_ALSO)  
 [AUTHOR](#AUTHOR)  
 
 * * *
@@ -27,6 +27,7 @@ peg, leg − parser generators
 ## SYNOPSIS<a name="SYNOPSIS"></a>
 
 **peg [−hvV −ooutput]** _[filename ...]_
+
 **leg [−hvV −ooutput]** _[filename ...]_
 
 ## DESCRIPTION<a name="DESCRIPTION"></a>
@@ -163,7 +164,7 @@ while (yyparse()) /* repeat until EOF */
 return 0;  
 }
 
-## PEG GRAMMARS<a name="PEG GRAMMARS"></a>
+## PEG GRAMMARS<a name="PEG_GRAMMARS"></a>
 
 A grammar consists of a set of named rules.
 
@@ -329,7 +330,7 @@ To summarise the above, the parser tries to match the input text against a patte
 
 Note that predicates are evaluated _immediately_ during the search for a successful match, since they contribute to the success or failure of the search. Actions, however, are evaluated only after a successful match has been found.
 
-## PEG GRAMMAR FOR PEG GRAMMARS<a name="PEG GRAMMAR FOR PEG GRAMMARS"></a>
+## PEG GRAMMAR FOR PEG GRAMMARS<a name="PEG_GRAMMAR_FOR_PEG_GRAMMARS"></a>
 
 The grammar for _peg_ grammars is shown below. This will both illustrate and formalise the above description.
 
@@ -381,7 +382,7 @@ Action <− ’{’ < [^}]* > ’}’ Spacing
 BEGIN <− ’<’ Spacing  
 END <− ’>’ Spacing
 
-## LEG GRAMMARS<a name="LEG GRAMMARS"></a>
+## LEG GRAMMARS<a name="LEG_GRAMMARS"></a>
 
 _leg_ is a variant of _peg_ that adds some features of _lex_(1) and _yacc_(1). It differs from _peg_ in the following ways.**  
 %{ **_text... _**%}**
@@ -453,7 +454,7 @@ The semantic value returned (by assigning to ’$$’) from the sub−rule _name
 
 The desk calculator example below illustrates the use of ’$$’ and ’:’.
 
-## LEG EXAMPLE: A DESK CALCULATOR<a name="LEG EXAMPLE: A DESK CALCULATOR"></a>
+## LEG EXAMPLE: A DESK CALCULATOR<a name="LEG_EXAMPLE_A_DESK_CALCULATOR"></a>
 
 The extensions in _leg_ described above allow useful parsers and evaluators (including declarations, grammar rules, and supporting C functions such as ’main’) to be kept within a single source file. To illustrate this we show a simple desk calculator supporting the four common arithmetic operators and named variables. The intermediate results of arithmetic evaluation will be accumulated on an implicit stack by returning them as semantic values from sub−rules.
 
@@ -505,7 +506,7 @@ while (yyparse())
 return 0;  
 }
 
-## LEG GRAMMAR FOR LEG GRAMMARS<a name="LEG GRAMMAR FOR LEG GRAMMARS"></a>
+## LEG GRAMMAR FOR LEG GRAMMARS<a name="LEG_GRAMMAR_FOR_LEG_GRAMMARS"></a>
 
 The grammar for _leg_ grammars is shown below. This will both illustrate and formalise the above description.
 
@@ -582,7 +583,7 @@ comment = ’#’ ( !end−of−line . )* end−of−line
 end−of−line = ’\r\n’ | ’\n’ | ’\r’  
 end−of−file = !.
 
-## CUSTOMISING THE PARSER<a name="CUSTOMISING THE PARSER"></a>
+## CUSTOMISING THE PARSER<a name="CUSTOMISING_THE_PARSER"></a>
 
 The following symbols can be redefined in declaration sections to modify the generated parser code.**  
 YYSTYPE**
@@ -737,7 +738,7 @@ Returns all parser−allocated storage associated with _yy_ to the system. The s
 
 Note that the storage for the yycontext structure itself is never allocated or reclaimed implicitly. The application must allocate these structures in automatic storage, or use _calloc_() and _free_() to manage them explicitly. The example in the following section demonstrates one approach to resource management.
 
-## LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT<a name="LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT"></a>
+## LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT<a name="LEG_EXAMPLE_EXTENDING_THE_PARSERS_CONTEXT"></a>
 
 The _yy_ variable passed to actions contains the state of the parser plus any additional fields defined by YY_CTX_MEMBERS. Theses fields can be used to store application−specific information that is global to a particular call of _yyparse_(). A trivial but complete _leg_ example follows in which the yycontext structure is extended with a _count_ of the number of newline characters seen in the input so far (the grammar otherwise consumes and ignores the entire input). The caller of _yyparse_() uses _count_ to print the number of lines of input that were read.
 
@@ -854,7 +855,7 @@ Several commonly−used _lex_(1) features (yywrap(), yyin, etc.) are completely 
 
 The generated parser does not contain ’#line’ directives to direct C compiler errors back to the grammar description when appropriate.
 
-## SEE ALSO<a name="SEE ALSO"></a>
+## SEE ALSO<a name="SEE_ALSO"></a>
 
 D. Val Schorre, _META II, a syntax−oriented compiler writing language,_ 19th ACM National Conference, 1964, pp. 41.301−−41.311\. Describes a self−implementing parser generator for analytic grammars with no backtracking.
 
