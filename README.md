@@ -4,7 +4,7 @@
 [SYNOPSIS](#SYNOPSIS)  
 [DESCRIPTION](#DESCRIPTION)  
 [OPTIONS](#OPTIONS)  
-[A SIMPLE EXAMPLE](#A SIMPLE EXAMPLE)  
+[A SIMPLE EXAMPLE](#SIMPLE_EXAMPLE)  
 [PEG GRAMMARS](#PEG GRAMMARS)  
 [PEG GRAMMAR FOR PEG GRAMMARS](#PEG GRAMMAR FOR PEG GRAMMARS)  
 [LEG GRAMMARS](#LEG GRAMMARS)  
@@ -26,8 +26,8 @@ peg, leg − parser generators
 
 ## SYNOPSIS<a name="SYNOPSIS"></a>
 
-**peg [−hvV −ooutput]** _[filename ...]_**  
-leg [−hvV −ooutput]** _[filename ...]_
+**peg [−hvV −ooutput]** _[filename ...]_
+**leg [−hvV −ooutput]** _[filename ...]_
 
 ## DESCRIPTION<a name="DESCRIPTION"></a>
 
@@ -125,7 +125,7 @@ writes version information to standard error then exits.
 
 </table>
 
-## A SIMPLE EXAMPLE<a name="A SIMPLE EXAMPLE"></a>
+## A SIMPLE EXAMPLE<a name="SIMPLE_EXAMPLE"></a>
 
 The following _peg_ input specifies a grammar with a single rule (called ’start’) that is satisfied when the input contains the string "username".
 
