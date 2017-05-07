@@ -26,9 +26,9 @@ peg, leg − parser generators
 
 ## SYNOPSIS<a name="SYNOPSIS"></a>
 
-**peg [−hvV −ooutput]** _[filename ...]_
+**peg [−hvV −o**output**]** _[filename ...]_
 
-**leg [−hvV −ooutput]** _[filename ...]_
+**leg [−hvV −o**output**]** _[filename ...]_
 
 ## DESCRIPTION<a name="DESCRIPTION"></a>
 
@@ -66,7 +66,7 @@ prints a summary of available options and then exits.
 
 </table>
 
-**−ooutput**
+**−o**output
 
 writes the generated parser to the file **output** instead of the standard output.
 
@@ -200,7 +200,7 @@ The element stands for the entire pattern in the rule with the given **name**.
 
 A character or string enclosed in double quotes is matched literally. The ANSI C escape sequences are recognised within the _characters_.
 
-`’characters**’`
+`’characters’`
 
 A character or string enclosed in single quotes is matched literally, as above.
 
@@ -333,7 +333,7 @@ Note that predicates are evaluated _immediately_ during the search for a success
 ## PEG GRAMMAR FOR PEG GRAMMARS<a name="PEG_GRAMMAR_FOR_PEG_GRAMMARS"></a>
 
 The grammar for _peg_ grammars is shown below. This will both illustrate and formalise the above description.
-
+```
 Grammar <− Spacing Definition+ EndOfFile
 
 Definition <− Identifier LEFTARROW Expression  
@@ -381,7 +381,7 @@ EndOfFile <− !.
 Action <− ’{’ < [^}]* > ’}’ Spacing  
 BEGIN <− ’<’ Spacing  
 END <− ’>’ Spacing
-
+```
 ## LEG GRAMMARS<a name="LEG_GRAMMARS"></a>
 
 _leg_ is a variant of _peg_ that adds some features of _lex_(1) and _yacc_(1). It differs from _peg_ in the following ways.**  
