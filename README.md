@@ -130,25 +130,25 @@ writes version information to standard error then exits.
 
 The following _peg_ input specifies a grammar with a single rule (called ’start’) that is satisfied when the input contains the string "username".
 
-start <− "username"
+`start <− "username"`
 
 (The quotation marks are _not_ part of the matched text; they serve to indicate a literal string to be matched.) In other words, _yyparse_() in the generated C source will return non−zero only if the next eight characters read from the input spell the word "username". If the input contains anything else, _yyparse_() returns zero and no input will have been consumed. (Subsequent calls to _yyparse_() will also return zero, since the parser is effectively blocked looking for the string "username".) To ensure progress we can add an alternative clause to the ’start’ rule that will match any single character if "username" is not found.
-
+```
 start <− "username"  
 / .
-
+```
 _yyparse_() now always returns non−zero (except at the very end of the input). To do something useful we can add actions to the rules. These actions are performed after a complete match is found (starting from the first rule) and are chosen according to the ’path’ taken through the grammar to match the input. (Linguists would call this path a ’phrase marker’.)
-
+```
 start <− "username" { printf("%s\n", getlogin()); }  
 / < . > { putchar(yytext[0]); }
-
+```
 The first line instructs the parser to print the user’s login name whenever it sees "username" in the input. If that match fails, the second line tells the parser to echo the next character on the input the standard output. Our parser is now performing useful work: it will copy the input to the output, replacing all occurrences of "username" with the user’s account name.
 
 Note the angle brackets (’<’ and ’>’) that were added to the second alternative. These have no effect on the meaning of the rule, but serve to delimit the text made available to the following action in the variable _yytext_.
 
 If the above grammar is placed in the file **username.peg**, running the command
 
-peg −o username.c username.peg
+`peg −o username.c username.peg`
 
 will save the corresponding parser in the file **username.c**. To create a complete program this parser could be included by a C program as follows.
 ```c
@@ -168,7 +168,7 @@ return 0;
 
 A grammar consists of a set of named rules.
 
-name <− pattern
+`name <− pattern`
 
 The **pattern** contains one or more of the following elements.
 
@@ -196,23 +196,23 @@ The element stands for the entire pattern in the rule with the given **name**.
 
 </table>
 
-**"**characters**"**
+`"characters"`
 
 A character or string enclosed in double quotes is matched literally. The ANSI C escape sequences are recognised within the _characters_.
 
-**’**characters**’**
+`’characters**’`
 
 A character or string enclosed in single quotes is matched literally, as above.
 
-**[**characters**]**
+`[characters]`
 
 A set of characters enclosed in square brackets matches any single character from the set, with escape characters recognised as above. If the set begins with an uparrow (^) then the set is negated (the element matches any character _not_ in the set). Any pair of characters separated with a dash (−) represents the range of characters from the first to the second, inclusive. A single alphabetic character or underscore is matched by the following set.
 
-[a−zA−Z_]
+`[a−zA−Z_]`
 
 Similarly, the following matches any single non−digit character.
 
-[^0−9]
+`[^0−9]`
 
 <table rules="none" frame="void" border="0" cellpadding="0" cellspacing="0" width="100%">
 
@@ -238,11 +238,11 @@ A dot matches any character. Note that the only time this fails is at the end of
 
 </table>
 
-**( **pattern **)**
+`( pattern )`
 
 Parentheses are used for grouping (modifying the precedence of the operators described below).
 
-**{ **action **}**
+`{ action }`
 
 Curly braces surround actions. The action is arbitrary C source code to be executed at the end of matching. Any braces within the action must be properly nested. Any input text that was matched before the action and delimited by angle brackets (see below) is made available within the action as the contents of the character array _yytext_. The length of (number of characters in) _yytext_ is available in the variable _yyleng_. (These variable names are historical; see _lex_(1).)
 
