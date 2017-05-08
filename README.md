@@ -9,10 +9,10 @@ PEG
  [PEG GRAMMARS](#PEG%20GRAMMARS)
  [PEG GRAMMAR FOR PEG GRAMMARS](#PEG%20GRAMMAR%20FOR%20PEG%20GRAMMARS)
  [LEG GRAMMARS](#LEG%20GRAMMARS)
- [LEG EXAMPLE: A DESK CALCULATOR](#LEG%20EXAMPLE:%20A%20DESK%20CALCULATOR)
+ [LEG EXAMPLE: A DESK CALCULATOR](#LEG%20EXAMPLE%20A%20DESK%20CALCULATOR)
  [LEG GRAMMAR FOR LEG GRAMMARS](#LEG%20GRAMMAR%20FOR%20LEG%20GRAMMARS)
  [CUSTOMISING THE PARSER](#CUSTOMISING%20THE%20PARSER)
- [LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG%20EXAMPLE:%20EXTENDING%20THE%20PARSER’S%20CONTEXT)
+ [LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG%20EXAMPLE%20EXTENDING%20THE%20PARSERS%20CONTEXT)
  [DIAGNOSTICS](#DIAGNOSTICS)
  [CAVEATS](#CAVEATS)
  [BUGS](#BUGS)
@@ -29,8 +29,8 @@ peg, leg − parser generators
 SYNOPSIS
 --------
 
-**peg [−hvV −ooutput]** *[filename ...]* **
- leg [−hvV −ooutput]** *[filename ...]*
+**peg [−hvV −ooutput]** *[filename ...]*
+**leg [−hvV −ooutput]** *[filename ...]*
 
 DESCRIPTION
 -----------
@@ -83,46 +83,46 @@ A SIMPLE EXAMPLE
 
 The following *peg* input specifies a grammar with a single rule (called ’start’) that is satisfied when the input contains the string "username".
 
-start \<− "username"
+`start <− "username"`
 
 (The quotation marks are *not* part of the matched text; they serve to indicate a literal string to be matched.) In other words, *yyparse*() in the generated C source will return non−zero only if the next eight characters read from the input spell the word "username". If the input contains anything else, *yyparse*() returns zero and no input will have been consumed. (Subsequent calls to *yyparse*() will also return zero, since the parser is effectively blocked looking for the string "username".) To ensure progress we can add an alternative clause to the ’start’ rule that will match any single character if "username" is not found.
-
-start \<− "username"
+```
+start <− "username"
  / .
-
+```
 *yyparse*() now always returns non−zero (except at the very end of the input). To do something useful we can add actions to the rules. These actions are performed after a complete match is found (starting from the first rule) and are chosen according to the ’path’ taken through the grammar to match the input. (Linguists would call this path a ’phrase marker’.)
-
-start \<− "username" { printf("%s\\n", getlogin()); }
- / \< . \> { putchar(yytext[0]); }
-
+```
+start <− "username" { printf("%s\\n", getlogin()); }
+ / < . > { putchar(yytext[0]); }
+```
 The first line instructs the parser to print the user’s login name whenever it sees "username" in the input. If that match fails, the second line tells the parser to echo the next character on the input the standard output. Our parser is now performing useful work: it will copy the input to the output, replacing all occurrences of "username" with the user’s account name.
 
 Note the angle brackets (’\<’ and ’\>’) that were added to the second alternative. These have no effect on the meaning of the rule, but serve to delimit the text made available to the following action in the variable *yytext*.
 
 If the above grammar is placed in the file **username.peg**, running the command
 
-peg −o username.c username.peg
+`peg −o username.c username.peg`
 
 will save the corresponding parser in the file **username.c**. To create a complete program this parser could be included by a C program as follows.
+```c
+#include <stdio.h>  /* printf(), putchar() */
+#include <unistd.h> /* getlogin() */
 
-\#include \<stdio.h\> /\* printf(), putchar() \*/
- \#include \<unistd.h\> /\* getlogin() \*/
-
-\#include "username.c" /\* yyparse() \*/
+#include "username.c" /* yyparse() */
 
 int main()
- {
- while (yyparse()) /\* repeat until EOF \*/
- ;
- return 0;
- }
-
+{
+    while (yyparse()) /* repeat until EOF */
+    ;
+    return 0;
+}
+```
 PEG GRAMMARS
 ------------
 
 A grammar consists of a set of named rules.
 
-name \<− pattern
+`name <− pattern`
 
 The **pattern** contains one or more of the following elements.
 
