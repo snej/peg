@@ -29,9 +29,8 @@ peg, leg − parser generators
 SYNOPSIS
 --------
 
-**peg [−hvV −ooutput]** *[filename ...]*
-
-**leg [−hvV −ooutput]** *[filename ...]*
+**peg [−hvV −o\<output\>]** *[filename ...]*  
+**leg [−hvV −o\<output\>]** *[filename ...]*
 
 DESCRIPTION
 -----------
@@ -60,9 +59,9 @@ OPTIONS
 </tbody>
 </table>
 
-**−ooutput**
+**−o\<output\>**
 
-writes the generated parser to the file **output** instead of the standard output.
+writes the generated parser to the file **\<output\>** instead of the standard output.
 
 <table>
 <colgroup>
