@@ -120,102 +120,64 @@ PEG GRAMMARS
 ------------
 
 A grammar consists of a set of named rules.
-
 ```
 name <− pattern
 ```
+**_name_**
 
-<p style="margin-left: 3%; margin-top: 1em"><b>name</b></p></td>
-<p style="margin-left: 14%; margin-top: 1em">The element stands for the
-entire pattern in the rule with the given <b>name</b>.</p></td></tr>
+The element stands for the
+entire pattern in the rule with the given _name_.
 
+**"** _characters_ **"**
 
-<p style="margin-left:3%;"><b>&quot;</b><i>&nbsp;characters&nbsp;</i><b>&quot;</b></p>
-<p style="margin-left:14%;">A character or string enclosed
+A character or string enclosed
 in double quotes is matched literally. The ANSI C escape
-sequences are recognised within the <i>characters</i>.</p>
+sequences are recognised within the _characters_.
 
+**'** _characters_ **'**
 
-<p style="margin-left:3%;"><b>&rsquo;</b><i>&nbsp;characters&nbsp;</i><b>&rsquo;</b></p>
-<p style="margin-left:14%;">A character or string enclosed
-in single quotes is matched literally, as above.</p>
+A character or string enclosed
+in single quotes is matched literally, as above.
 
-<p style="margin-left:3%;"><b>[</b><i>&nbsp;characters&nbsp;</i><b>]</b></p>
-<p style="margin-left:14%;">A set of characters enclosed in
+**[** _characters_ **]**
+
+A set of characters enclosed in
 square brackets matches any single character from the set,
 with escape characters recognised as above. If the set
-begins with an uparrow (^) then the set is negated (the
-element matches any character <i>not</i> in the set). Any
-pair of characters separated with a dash (&minus;)
+begins with an uparrow `^` then the set is negated (the
+element matches any character _not_ in the set). Any
+pair of characters separated with a dash `-`
 represents the range of characters from the first to the
 second, inclusive. A single alphabetic character or
-underscore is matched by the following set.
-<!-- <code>[a&minus;zA&minus;Z_]</code> -->
-Similarly, the following matches any single non&minus;digit character. 
-<code>[^0&minus;9]</code></p>
+underscore is matched by the following set.  
+`[a-zA-Z_]`
+Similarly, the following matches any single non-digit character. 
+`[^0-9]`
 
+**(** _pattern_ **)**
 
-<p style="margin-left:3%;"><b>(&nbsp;</b>pattern&nbsp;<b>)</b></p>
-<p style="margin-left:14%;">Parentheses are used for
+Parentheses are used for
 grouping (modifying the precedence of the operators
-described below).</p>
+described below).
 
+**{** _action_ **}**
 
-<p style="margin-left:3%;"><b>{&nbsp;</b>action&nbsp;<b>}</b></p>
-<p style="margin-left:14%;">Curly braces surround actions.
+Curly braces surround actions.
 The action is arbitrary C source code to be executed at the
 end of matching. Any braces within the action must be
 properly nested. Any input text that was matched before the
 action and delimited by angle brackets (see below) is made
 available within the action as the contents of the character
-array <i>yytext</i>. The length of (number of characters in)
-<i>yytext</i> is available in the variable <i>yyleng</i>.
+array _yytext_. The length of (number of characters in)
+_yytext_ is available in the variable _yyleng_.
 (These variable names are historical; see
-<i>lex</i>(1).)</p>
+_lex_(1).)
 
-
-
-<table width="100%" border="0" style="margin-left: 3%" rules="none" frame="void"
-       cellspacing="0" cellpadding="0">
-
-<!-- Dot operator -->
-<tr valign="top" align="left">
-<td style="margin-left: 1%" width="10%">
-<p><b>.</b></p>
-</td>
-
-<td style="margin-left: 1%" width="90%">
-<p>A dot matches any character. Note that the only time
-this fails is at the end of file, where there is no
-character to match.</p>
-</td>
-</tr>
-
-<!-- less then -->
-<tr valign="top" align="left">
-<td style="margin-left: 1%" width="10%">
-<p><b>&lt;</b></p></td>
-
-<td style="margin-left: 1%" width="90%">
-<p>An opening angle bracket always matches (consuming no
-input) and causes the parser to begin accumulating matched
-text. This text will be made available to actions in the
-variable <i>yytext</i>.</p></td>
-</tr>
-
-<!-- greater then -->
-<tr valign="top" align="left">
-<td style="margin-left: 1%" width="10%">
-<p><b>&gt;</b></p></td>
-
-<td style="margin-left: 1%" width="90%">
-<p>A closing angle bracket always matches (consuming no
-input) and causes the parser to stop accumulating text for
-<i>yytext</i>.</p> </td>
-</tr>
-
-</td></tr>
-</table>
+| Symbol | Description |
+| :----: | :---------- |
+|   .    | A dot matches any character. Note that the only time this fails is at the end of file, where there is nocharacter to match.  |
+|   <    | An opening angle bracket always matches (consuming no input) and causes the parser to begin accumulating matched text. This text will be made available to actions in the variable _yytext_. |
+|   >    | A closing angle bracket always matches (consuming no input) and causes the parser to stop accumulating text for _yytext_.|
 
 PEG GRAMMAR FOR PEG GRAMMARS
 ----------------------------
@@ -273,149 +235,121 @@ The grammar for *peg* grammars is shown below. This will both illustrate and for
 LEG GRAMMARS
 ------------
 
-<p style="margin-left:11%; margin-top: 1em"><i>leg</i> is a
-variant of <i>peg</i> that adds some features of
-<i>lex</i>(1) and <i>yacc</i>(1). It differs from <i>peg</i>
-in the following ways. <b><br>
-%{&nbsp;</b><i>text...&nbsp;</i><b>%}</b></p>
+_leg_ is a variant of _peg_ that adds some features of _lex_(1)
+and _yacc_(1). It differs from _peg_ in the following ways.
 
-<p style="margin-left:22%;">A declaration section can
-appear anywhere that a rule definition is expected. The
-<i>text</i> between the delimiters &rsquo;%{&rsquo; and
-&rsquo;%}&rsquo; is copied verbatim to the generated C
-parser code <i>before</i> the code that implements the
-parser itself.</p>
+**%{ _text..._ %}**
 
+A declaration section can appear anywhere that a rule definition
+is expected. The _text_ between the delimiters `%{` and `%}` is
+copied verbatim to the generated C parser code _before_ the code
+that implements the parser itself.
 
-<p style="margin-left:11%;"><i>name&nbsp;</i><b>=&nbsp;</b><i>pattern</i></p>
+**_name_ = _pattern_**
 
-<p style="margin-left:22%;">The &rsquo;assignment&rsquo;
-operator replaces the left arrow operator
-&rsquo;&lt;&minus;&rsquo;.</p>
+The 'assignment' operator `=` replaces the left arrow operator `<-`
 
-<p style="margin-left:11%;"><b>rule&minus;name</b></p>
+**_rule-name_**
 
-<p style="margin-left:22%;">Hyphens can appear as letters
-in the names of rules. Each hyphen is converted into an
-underscore in the generated C source code. A single hyphen
-&rsquo;&minus;&rsquo; is a legal rule name.</p>
+Hyphens can appear as letters in the names of rules. Each hyphen
+is converted into an underscore in the generated C source code. A
+single hyphen `-` is a legal rule name.
+```
+-       = [ \t\n\r]*
+number  = [0-9]+                 -
+name    = [a-zA-Z_][a-zA_Z_0-9]* -
+l-paren = '('                    -
+r-paren = ')'                    -
+```
+This example shows how ignored whitespace can be obvious when
+reading the grammar and yet unobtrusive when placed liberally at
+the end of every rule associated with a lexical element.
 
-<p style="margin-left:22%; margin-top: 1em">&minus; = [
-\t\n\r]* <br>
-number = [0&minus;9]+ &minus; <br>
-name = [a&minus;zA&minus;Z_][a&minus;zA_Z_0&minus;9]*
-&minus; <br>
-l&minus;paren = &rsquo;(&rsquo; &minus; <br>
-r&minus;paren = &rsquo;)&rsquo; &minus;</p>
+**_seq-1_ | _seq-2_**
 
-<p style="margin-left:22%; margin-top: 1em">This example
-shows how ignored whitespace can be obvious when reading the
-grammar and yet unobtrusive when placed liberally at the end
-of every rule associated with a lexical element.</p>
+The alternation operator is vertical bar `|` rather than forward
+slash `/`. The _peg_ rule
+```
+name <- sequence-1
+      / sequence-2
+      / sequence-3
+```
+is therefore written
+```
+name = sequence-1
+     | sequence-2
+     | sequence-3
+     ;
+```
+in _leg_ (with the final semicolon being  optional,  as  described next).
 
+**@{ _action_ }**
 
-<p style="margin-left:11%;"><i>seq&minus;1&nbsp;</i><b>|&nbsp;</b><i>seq&minus;2</i></p>
+Actions prefixed with an `@` symbol will be performed during
+parsing, at the time they are encountered while matching the
+input text with a rule. Because of back-tracking in the PEG
+parsing algorithm, actions prefixed with `@` might be performed
+multiple times for the same input text. (The usual behviour of
+actions is that they are saved up until matching is complete, and
+then those that are part of the final derivation are performed in
+left-to-right order.) The variable _yytext_ is available within
+these actions.
 
-<p style="margin-left:22%;">The alternation operator is
-vertical bar &rsquo;|&rsquo; rather than forward slash
-&rsquo;/&rsquo;. The <i>peg</i> rule</p>
+**_exp_ ~{ _action_ }**
 
-<p style="margin-left:22%; margin-top: 1em">name
-&lt;&minus; sequence&minus;1 <br>
-/ sequence&minus;2 <br>
-/ sequence&minus;3</p>
-
-<p style="margin-left:22%; margin-top: 1em">is therefore
-written</p>
-
-<p style="margin-left:22%; margin-top: 1em">name =
-sequence&minus;1 <br>
-| sequence&minus;2 <br>
-| sequence&minus;3 <br>
-;</p>
-
-<p style="margin-left:22%; margin-top: 1em">in <i>leg</i>
-(with the final semicolon being optional, as described
-next).</p>
-
-
-<p style="margin-left:11%;"><i>@{&nbsp;action&nbsp;}</i></p>
-
-<p style="margin-left:22%;">Actions prefixed with an
-&rsquo;at&rsquo; symbol will be performed during parsing, at
-the time they are encountered while matching the input text
-with a rule. Because of back-tracking in the PEG parsing
-algorithm, actions prefixed with &rsquo;@&rsquo; might be
-performed multiple times for the same input text. (The usual
-behviour of actions is that they are saved up until matching
-is complete, and then those that are part of the final
-derivation are performed in left-to-right order.) The
-variable <i>yytext</i> is available within these
-actions.</p>
-
-
-<p style="margin-left:11%;"><i>exp&nbsp;</i><b>~&nbsp;</b><i>{&nbsp;action&nbsp;}</i></p>
-
-<p style="margin-left:22%;">A postfix operator
-<b>~</b><i>{&nbsp;action&nbsp;}</i> can be placed after any
+A postfix operator `~{ action }` can be placed after any
 expression and will behave like a normal action (arbitrary C
-code) except that it is invoked only when <i>exp</i> fails.
+code) except that it is invoked only when _exp_ fails.
 It binds less tightly than any other operator except
 alternation and sequencing, and is intended to make error
 handling and recovery code easier to write. Note that
-<i>yytext</i> and <i>yyleng</i> are not available inside
-these actions, but the pointer variable <i>yy</i> is
-available to give the code access to any user&minus;defined
-members of the parser state (see &quot;CUSTOMISING THE
-PARSER&quot; below). Note also that <i>exp</i> is always a
+_yytext_ and _yyleng_ are not available inside
+these actions, but the pointer variable _yy_ is
+available to give the code access to any user-defined
+members of the parser state (see "CUSTOMISING THE
+PARSER" below). 
+
+>Note: it is always a
 single expression; to invoke an error action for any failure
 within a sequence, parentheses must be used to group the
-sequence into a single expression.</p>
+sequence into a single expression.
 
-<p style="margin-left:22%; margin-top: 1em">rule = e1 e2 e3
-~{ error(&quot;e[12] ok; e3 has failed&quot;); } <br>
-| ...</p>
+```
+rule = e1 e2 e3 ~{ error("e[12] ok; e3 has failed"); }
+     | ...
 
-<p style="margin-left:22%; margin-top: 1em">rule = (e1 e2
-e3) ~{ error(&quot;one of e[123] has failed&quot;); } <br>
-| ...</p>
+rule = (e1 e2 e3) ~{ error("one of e[123] has failed"); }
+     | ...
+```
 
+** _pattern _ ; **
 
-<p style="margin-left:11%;"><i>pattern&nbsp;</i><b>;</b></p>
+A semicolon punctuator can
+optionally terminate a _pattern_.
 
-<p style="margin-left:22%;">A semicolon punctuator can
-optionally terminate a <i>pattern</i>.</p>
+**%% _text..._**
 
+A double percent `%%` terminates the rules (and declarations)
+section of the grammar. All _text_ following `%%` is copied
+verbatim to the generated C parser code _after_ the parser
+implementation code.
 
-<p style="margin-left:11%;"><b>%%&nbsp;</b><i>text...</i></p>
+**$$ = _value_ **
 
-<p style="margin-left:22%;">A double percent
-&rsquo;%%&rsquo; terminates the rules (and declarations)
-section of the grammar. All <i>text</i> following
-&rsquo;%%&rsquo; is copied verbatim to the generated C
-parser code <i>after</i> the parser implementation code.</p>
+A sub-rule can return a semantic _value_ from an action by
+assigning it to the pseudo&minus;variable `$$`. All semantic
+values must have the same type (which defaults to `int`). This
+type can be changed by defining YYSTYPE in a declaration
+section.
 
+**_identifier_:_name_**
 
-<p style="margin-left:11%;"><b>$$&nbsp;=&nbsp;</b><i>value</i></p>
+The semantic value returned (by assigning to `$$`) from the
+sub-rule _name_ is associated with the _identifier_ and can be
+referred to in subsequent actions.
 
-<p style="margin-left:22%;">A sub&minus;rule can return a
-semantic <i>value</i> from an action by assigning it to the
-pseudo&minus;variable &rsquo;$$&rsquo;. All semantic values
-must have the same type (which defaults to
-&rsquo;int&rsquo;). This type can be changed by defining
-YYSTYPE in a declaration section.</p>
-
-
-<p style="margin-left:11%;"><i>identifier</i><b>:</b><i>name</i></p>
-
-<p style="margin-left:22%;">The semantic value returned (by
-assigning to &rsquo;$$&rsquo;) from the sub&minus;rule
-<i>name</i> is associated with the <i>identifier</i> and can
-be referred to in subsequent actions.</p>
-
-<p style="margin-left:11%; margin-top: 1em">The desk
-calculator example below illustrates the use of
-&rsquo;$$&rsquo; and &rsquo;:&rsquo;.</p>
+The desk calculator example below illustrates the use of
+`$$` and `:`.
 
 LEG EXAMPLE: A DESK CALCULATOR
 ------------------------------
