@@ -2,8 +2,9 @@ PEG
 ===
 
 [NAME](#NAME)
- [SYNOPSIS](#SYNOPSIS)
- [DESCRIPTION](#DESCRIPTION)
+  [SYNOPSIS](#SYNOPSIS)
+ 
+[DESCRIPTION](#DESCRIPTION)
  [OPTIONS](#OPTIONS)
  [A SIMPLE EXAMPLE](#A%20SIMPLE%20EXAMPLE)
  [PEG GRAMMARS](#PEG%20GRAMMARS)
@@ -30,6 +31,7 @@ SYNOPSIS
 --------
 
 **peg [−hvV −ooutput]** *[filename ...]*
+
 **leg [−hvV −ooutput]** *[filename ...]*
 
 DESCRIPTION
@@ -88,12 +90,12 @@ The following *peg* input specifies a grammar with a single rule (called ’star
 (The quotation marks are *not* part of the matched text; they serve to indicate a literal string to be matched.) In other words, *yyparse*() in the generated C source will return non−zero only if the next eight characters read from the input spell the word "username". If the input contains anything else, *yyparse*() returns zero and no input will have been consumed. (Subsequent calls to *yyparse*() will also return zero, since the parser is effectively blocked looking for the string "username".) To ensure progress we can add an alternative clause to the ’start’ rule that will match any single character if "username" is not found.
 ```
 start <− "username"
- / .
+       / .
 ```
 *yyparse*() now always returns non−zero (except at the very end of the input). To do something useful we can add actions to the rules. These actions are performed after a complete match is found (starting from the first rule) and are chosen according to the ’path’ taken through the grammar to match the input. (Linguists would call this path a ’phrase marker’.)
 ```
 start <− "username" { printf("%s\\n", getlogin()); }
- / < . > { putchar(yytext[0]); }
+       / < . >      { putchar(yytext[0]); }
 ```
 The first line instructs the parser to print the user’s login name whenever it sees "username" in the input. If that match fails, the second line tells the parser to echo the next character on the input the standard output. Our parser is now performing useful work: it will copy the input to the output, replacing all occurrences of "username" with the user’s account name.
 
