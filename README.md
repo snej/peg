@@ -29,8 +29,8 @@ peg, leg − parser generators
 SYNOPSIS
 --------
 
-**peg [−hvV −o\<output\>]** *[filename ...]*  
-**leg [−hvV −o\<output\>]** *[filename ...]*
+**peg [−hvV −o\<output\>][\<filename\> ...]**  
+**leg [−hvV −o\<output\>][\<filename\> ...]**
 
 DESCRIPTION
 -----------
@@ -121,89 +121,90 @@ PEG GRAMMARS
 
 A grammar consists of a set of named rules.
 
-`name <− pattern`
+```
+name <− pattern
+```
 
 The **pattern** contains one or more of the following elements.
 
 <table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
 <tbody>
-<tr class="odd">
+
+<tr>
 <td align="left"><p><strong>name</strong></p>
 <p>The element stands for the entire pattern in the rule with the given <strong>name</strong>.</p></td>
 </tr>
-</tbody>
-</table>
 
-**"**characters**"**
+<tr><td align="left">
+<p><strong>" characters "</strong></p>
+<p>A character or string enclosed in double quotes is matched literally. The ANSI C escape sequences are recognised within the <i>characters</i>.</p>
+</td></tr>
 
-A character or string enclosed in double quotes is matched literally. The ANSI C escape sequences are recognised within the *characters*.
+<tr><td align="left">
+<p><strong>’ characters ’</strong></p>
+<p>A character or string enclosed in single quotes is matched literally, as above.</p>
+</td></tr>
 
-**’**characters**’**
-
-A character or string enclosed in single quotes is matched literally, as above.
-
-**[**characters**]**
-
-A set of characters enclosed in square brackets matches any single character from the set, with escape characters recognised as above. If the set begins with an uparrow (\^) then the set is negated (the element matches any character *not* in the set). Any pair of characters separated with a dash (−) represents the range of characters from the first to the second, inclusive. A single alphabetic character or underscore is matched by the following set.
-
-[a−zA−Z\_]
-
+<tr><td align="left">
+<p><strong>[ characters ]</strong></p>
+<p>A set of characters enclosed in square brackets matches any single character from the set, with escape characters recognised as above. If the set begins with an uparrow (^) then the set is negated (the element matches any character <em>not</em> in the set). Any pair of characters separated with a dash (−) represents the range of characters from the first to the second, inclusive. A single alphabetic character or underscore is matched by the following set:  
+<code>[a−zA−Z\_]</code>
 Similarly, the following matches any single non−digit character.
+<code>[^0−9]</code>
+</p>
+</td></tr>
 
-[\^0−9]
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
 <tr class="odd">
 <td align="left"><p><strong>.</strong></p>
 <p>A dot matches any character. Note that the only time this fails is at the end of file, where there is no character to match.</p></td>
 </tr>
-</tbody>
-</table>
 
-**( **pattern **)**
+<tr><td>
+<p><strong>( pattern )</strong></p>
+<p>Parentheses are used for grouping (modifying the precedence of the operators described below).</p>
+</td></tr>
 
-Parentheses are used for grouping (modifying the precedence of the operators described below).
+<tr><td>
+<p><strong>{ action }</strong></p>
+<p>Curly braces surround actions. The action is arbitrary C source code to be executed at the end of matching. Any braces within the action must be properly nested. Any input text that was matched before the action and delimited by angle brackets (see below) is made available within the action as the contents of the character array <em>yytext</em>. The length of (number of characters in) <em>yytext</em> is available in the variable <em>yyleng</em>. (These variable names are historical; see <em>lex</em>(1).)</p>
+</td></tr>
 
-**{ **action **}**
-
-Curly braces surround actions. The action is arbitrary C source code to be executed at the end of matching. Any braces within the action must be properly nested. Any input text that was matched before the action and delimited by angle brackets (see below) is made available within the action as the contents of the character array *yytext*. The length of (number of characters in) *yytext* is available in the variable *yyleng*. (These variable names are historical; see *lex*(1).)
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
 <tr class="odd">
-<td align="left"><p><strong>&lt;</strong></p>
-<p>An opening angle bracket always matches (consuming no input) and causes the parser to begin accumulating matched text. This text will be made available to actions in the variable <em>yytext</em>.</p></td>
-<td align="left"><p><strong>&gt;</strong></p>
-<p>A closing angle bracket always matches (consuming no input) and causes the parser to stop accumulating text for <em>yytext</em>.</p></td>
-</tr>
+<td align="left">
+<p><strong>&lt;</strong></p>
+<p>An opening angle bracket always matches (consuming no input) and causes the parser to begin accumulating matched text. This text will be made available to actions in the variable <em>yytext</em>.</p>
+</td></tr>
+
+<td align="left">
+<p><strong>&gt;</strong></p>
+<p>A closing angle bracket always matches (consuming no input) and causes the parser to stop accumulating text for <em>yytext</em>.</p>
+</td></tr>
+
 </tbody>
 </table>
 
 The above *element*s can be made optional and/or repeatable with the following suffixes:
- element **?**
 
-The element is optional. If present on the input, it is consumed and the match succeeds. If not present on the input, no text is consumed and the match succeeds anyway.
+<table>
+<tbody>
 
-element **+**
+<tr><td>
+<p><strong>element ?</strong></p>
+<p>The element is optional. If present on the input, it is consumed and the match succeeds. If not present on the input, no text is consumed and the match succeeds anyway.</p>
+</tr></td>
 
-The element is repeatable. If present on the input, one or more occurrences of *element* are consumed and the match succeeds. If no occurrences of *element* are present on the input, the match fails.
+<tr><td>
+<p><strong>element +</strong></p>
+<p>The element is repeatable. If present on the input, one or more occurrences of <em>element</em> are consumed and the match succeeds. If no occurrences of <em>element</em> are present on the input, the match fails.</p>
+</tr></td>
 
-element **\***
+<tr><td>
+<p><strong>element *</strong></p>
+<p>The element is optional and repeatable. If present on the input, one or more occurrences of <em>element</em> are consumed and the match succeeds. If no occurrences of <em>element</em> are present on the input, the match succeeds anyway.</p>
+</tr></td>
 
-The element is optional and repeatable. If present on the input, one or more occurrences of *element* are consumed and the match succeeds. If no occurrences of *element* are present on the input, the match succeeds anyway.
+</tbody>
+</table>
 
 The above elements and suffixes can be converted into predicates (that match arbitrary input text and subsequently succeed or fail *without* consuming that input) with the following prefixes: **
  & **element
