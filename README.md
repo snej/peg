@@ -46,35 +46,34 @@ OPTIONS
 
 *peg* and *leg* provide the following options:
 
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
+<table rules="none" frame="void" border="0" cellpadding="0" cellspacing="0" width="100%">
 <tbody>
-<tr class="odd">
-<td align="left"><p><strong>−h</strong></p>
-<p>prints a summary of available options and then exits.</p></td>
+
+<tr align="left" valign="top">
+<td width="3%"><b>−h</b></td>
+<td width="78%">prints a summary of available options and then exits.</td>
 </tr>
-</tbody>
-</table>
 
-**−o\<output\>**
-
-writes the generated parser to the file **\<output\>** instead of the standard output.
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left"><p><strong>−P</strong></p>
-<p>suppresses #line directives in the output.</p></td>
-<td align="left"><p><strong>−v</strong></p>
-<p>writes verbose information to standard error while working.</p></td>
+<tr align="left" valign="top">
+<td width="3%"><b>−o&ltoutput&gt</b></td>
+<td width="78%">writes the generated parser to the file <b>output</b> instead of the standard output.</td>
 </tr>
+
+<tr align="left" valign="top">
+<td width="3%"><b>−P</b></td>
+<td width="78%">suppresses #line directives in the output.</td>
+</tr>
+
+<tr align="left" valign="top">
+<td width="3%"><b>−v</b></td>
+<td width="78%">writes verbose information to standard error while working.</td>
+</tr>
+
+<tr align="left" valign="top">
+<td width="3%"><b>−V</b></td>
+<td width="78%">writes version information to standard error then exits.</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -82,27 +81,27 @@ A SIMPLE EXAMPLE
 ----------------
 
 The following *peg* input specifies a grammar with a single rule (called ’start’) that is satisfied when the input contains the string "username".
-
-`start <− "username"`
-
+```
+start <− "username"
+```
 (The quotation marks are *not* part of the matched text; they serve to indicate a literal string to be matched.) In other words, *yyparse*() in the generated C source will return non−zero only if the next eight characters read from the input spell the word "username". If the input contains anything else, *yyparse*() returns zero and no input will have been consumed. (Subsequent calls to *yyparse*() will also return zero, since the parser is effectively blocked looking for the string "username".) To ensure progress we can add an alternative clause to the ’start’ rule that will match any single character if "username" is not found.
 ```
 start <− "username"
-       / .
+    / .
 ```
 *yyparse*() now always returns non−zero (except at the very end of the input). To do something useful we can add actions to the rules. These actions are performed after a complete match is found (starting from the first rule) and are chosen according to the ’path’ taken through the grammar to match the input. (Linguists would call this path a ’phrase marker’.)
 ```
 start <− "username" { printf("%s\\n", getlogin()); }
-       / < . >      { putchar(yytext[0]); }
+    / < . >         { putchar(yytext[0]); }
 ```
 The first line instructs the parser to print the user’s login name whenever it sees "username" in the input. If that match fails, the second line tells the parser to echo the next character on the input the standard output. Our parser is now performing useful work: it will copy the input to the output, replacing all occurrences of "username" with the user’s account name.
 
 Note the angle brackets (’\<’ and ’\>’) that were added to the second alternative. These have no effect on the meaning of the rule, but serve to delimit the text made available to the following action in the variable *yytext*.
 
 If the above grammar is placed in the file **username.peg**, running the command
-
-`peg −o username.c username.peg`
-
+```
+peg −o username.c username.peg
+```
 will save the corresponding parser in the file **username.c**. To create a complete program this parser could be included by a C program as follows.
 ```c
 #include <stdio.h>  /* printf(), putchar() */
