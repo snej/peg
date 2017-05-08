@@ -1,0 +1,1453 @@
+<!-- Creator     : groff version 1.22.2 -->
+<!-- CreationDate: Sun May  7 15:51:17 2017 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>PEG</title>
+
+</head>
+<body>
+
+<h1 align="center">PEG</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#A SIMPLE EXAMPLE">A SIMPLE EXAMPLE</a><br>
+<a href="#PEG GRAMMARS">PEG GRAMMARS</a><br>
+<a href="#PEG GRAMMAR FOR PEG GRAMMARS">PEG GRAMMAR FOR PEG GRAMMARS</a><br>
+<a href="#LEG GRAMMARS">LEG GRAMMARS</a><br>
+<a href="#LEG EXAMPLE: A DESK CALCULATOR">LEG EXAMPLE: A DESK CALCULATOR</a><br>
+<a href="#LEG GRAMMAR FOR LEG GRAMMARS">LEG GRAMMAR FOR LEG GRAMMARS</a><br>
+<a href="#CUSTOMISING THE PARSER">CUSTOMISING THE PARSER</a><br>
+<a href="#LEG EXAMPLE: EXTENDING THE PARSER&rsquo;S CONTEXT">LEG EXAMPLE: EXTENDING THE PARSER&rsquo;S CONTEXT</a><br>
+<a href="#DIAGNOSTICS">DIAGNOSTICS</a><br>
+<a href="#CAVEATS">CAVEATS</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">peg, leg
+&minus; parser generators</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>peg
+[&minus;hvV &minus;ooutput]</b> <i>[filename ...]</i>
+<b><br>
+leg [&minus;hvV &minus;ooutput]</b> <i>[filename
+...]</i></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>peg</i> and
+<i>leg</i> are tools for generating recursive&minus;descent
+parsers: programs that perform pattern matching on text.
+They process a Parsing Expression Grammar (PEG) [Ford 2004]
+to produce a program that recognises legal sentences of that
+grammar. <i>peg</i> processes PEGs written using the
+original syntax described by Ford; <i>leg</i> processes PEGs
+written using slightly different syntax and conventions that
+are intended to make it an attractive replacement for
+parsers built with <i>lex</i>(1) and <i>yacc</i>(1). Unlike
+<i>lex</i> and <i>yacc</i>, <i>peg</i> and <i>leg</i>
+support unlimited backtracking, provide ordered choice as a
+means for disambiguation, and can combine scanning (lexical
+analysis) and parsing (syntactic analysis) into a single
+activity.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>peg</i>
+reads the specified <i>filename</i>s, or standard input if
+no <i>filename</i>s are given, for a grammar describing the
+parser to generate. <i>peg</i> then generates a C source
+file that defines a function <i>yyparse().</i> This C source
+file can be included in, or compiled and then linked with, a
+client program. Each time the client program calls
+<i>yyparse</i>() the parser consumes input text according to
+the parsing rules, starting from the first rule in the
+grammar. <i>yyparse</i>() returns non&minus;zero if the
+input could be parsed according to the grammar; it returns
+zero if the input could not be parsed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The prefix
+&rsquo;yy&rsquo; or &rsquo;YY&rsquo; is prepended to all
+externally&minus;visible symbols in the generated parser.
+This is intended to reduce the risk of namespace pollution
+in client programs. (The choice of &rsquo;yy&rsquo; is
+historical; see <i>lex</i>(1) and <i>yacc</i>(1), for
+example.)</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>peg</i> and
+<i>leg</i> provide the following options:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>&minus;h</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>prints a summary of available options and then
+exits.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>&minus;ooutput</b></p>
+
+<p style="margin-left:22%;">writes the generated parser to
+the file <b>output</b> instead of the standard output.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>&minus;P</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>suppresses #line directives in the output.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>&minus;v</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>writes verbose information to standard error while
+working.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>&minus;V</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>writes version information to standard error then
+exits.</p> </td></tr>
+</table>
+
+<h2>A SIMPLE EXAMPLE
+<a name="A SIMPLE EXAMPLE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The following
+<i>peg</i> input specifies a grammar with a single rule
+(called &rsquo;start&rsquo;) that is satisfied when the
+input contains the string &quot;username&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">start
+&lt;&minus; &quot;username&quot;</p>
+
+<p style="margin-left:11%; margin-top: 1em">(The quotation
+marks are <i>not</i> part of the matched text; they serve to
+indicate a literal string to be matched.) In other words,
+<i>yyparse</i>() in the generated C source will return
+non&minus;zero only if the next eight characters read from
+the input spell the word &quot;username&quot;. If the input
+contains anything else, <i>yyparse</i>() returns zero and no
+input will have been consumed. (Subsequent calls to
+<i>yyparse</i>() will also return zero, since the parser is
+effectively blocked looking for the string
+&quot;username&quot;.) To ensure progress we can add an
+alternative clause to the &rsquo;start&rsquo; rule that will
+match any single character if &quot;username&quot; is not
+found.</p>
+
+<p style="margin-left:11%; margin-top: 1em">start
+&lt;&minus; &quot;username&quot; <br>
+/ .</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>yyparse</i>()
+now always returns non&minus;zero (except at the very end of
+the input). To do something useful we can add actions to the
+rules. These actions are performed after a complete match is
+found (starting from the first rule) and are chosen
+according to the &rsquo;path&rsquo; taken through the
+grammar to match the input. (Linguists would call this path
+a &rsquo;phrase marker&rsquo;.)</p>
+
+<p style="margin-left:11%; margin-top: 1em">start
+&lt;&minus; &quot;username&quot; { printf(&quot;%s\n&quot;,
+getlogin()); } <br>
+/ &lt; . &gt; { putchar(yytext[0]); }</p>
+
+<p style="margin-left:11%; margin-top: 1em">The first line
+instructs the parser to print the user&rsquo;s login name
+whenever it sees &quot;username&quot; in the input. If that
+match fails, the second line tells the parser to echo the
+next character on the input the standard output. Our parser
+is now performing useful work: it will copy the input to the
+output, replacing all occurrences of &quot;username&quot;
+with the user&rsquo;s account name.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note the angle
+brackets (&rsquo;&lt;&rsquo; and &rsquo;&gt;&rsquo;) that
+were added to the second alternative. These have no effect
+on the meaning of the rule, but serve to delimit the text
+made available to the following action in the variable
+<i>yytext</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the above
+grammar is placed in the file <b>username.peg</b>, running
+the command</p>
+
+<p style="margin-left:11%; margin-top: 1em">peg &minus;o
+username.c username.peg</p>
+
+<p style="margin-left:11%; margin-top: 1em">will save the
+corresponding parser in the file <b>username.c</b>. To
+create a complete program this parser could be included by a
+C program as follows.</p>
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;stdio.h&gt; /* printf(), putchar() */ <br>
+#include &lt;unistd.h&gt; /* getlogin() */</p>
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&quot;username.c&quot; /* yyparse() */</p>
+
+<p style="margin-left:11%; margin-top: 1em">int main() <br>
+{ <br>
+while (yyparse()) /* repeat until EOF */ <br>
+; <br>
+return 0; <br>
+}</p>
+
+<h2>PEG GRAMMARS
+<a name="PEG GRAMMARS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A grammar
+consists of a set of named rules.</p>
+
+<p style="margin-left:11%; margin-top: 1em">name
+&lt;&minus; pattern</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>pattern</b> contains one or more of the following
+elements.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p style="margin-top: 1em"><b>name</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">The element stands for the
+entire pattern in the rule with the given <b>name</b>.</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%;"><b>&quot;</b>characters<b>&quot;</b></p>
+
+<p style="margin-left:22%;">A character or string enclosed
+in double quotes is matched literally. The ANSI C escape
+sequences are recognised within the <i>characters</i>.</p>
+
+
+<p style="margin-left:11%;"><b>&rsquo;</b>characters<b>&rsquo;</b></p>
+
+<p style="margin-left:22%;">A character or string enclosed
+in single quotes is matched literally, as above.</p>
+
+<p style="margin-left:11%;"><b>[</b>characters<b>]</b></p>
+
+<p style="margin-left:22%;">A set of characters enclosed in
+square brackets matches any single character from the set,
+with escape characters recognised as above. If the set
+begins with an uparrow (^) then the set is negated (the
+element matches any character <i>not</i> in the set). Any
+pair of characters separated with a dash (&minus;)
+represents the range of characters from the first to the
+second, inclusive. A single alphabetic character or
+underscore is matched by the following set.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">[a&minus;zA&minus;Z_]</p>
+
+<p style="margin-left:22%; margin-top: 1em">Similarly, the
+following matches any single non&minus;digit character.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">[^0&minus;9]</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p><b>.</b></p></td>
+<td width="10%"></td>
+<td width="78%">
+
+
+<p>A dot matches any character. Note that the only time
+this fails is at the end of file, where there is no
+character to match.</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%;"><b>(&nbsp;</b>pattern&nbsp;<b>)</b></p>
+
+<p style="margin-left:22%;">Parentheses are used for
+grouping (modifying the precedence of the operators
+described below).</p>
+
+
+<p style="margin-left:11%;"><b>{&nbsp;</b>action&nbsp;<b>}</b></p>
+
+<p style="margin-left:22%;">Curly braces surround actions.
+The action is arbitrary C source code to be executed at the
+end of matching. Any braces within the action must be
+properly nested. Any input text that was matched before the
+action and delimited by angle brackets (see below) is made
+available within the action as the contents of the character
+array <i>yytext</i>. The length of (number of characters in)
+<i>yytext</i> is available in the variable <i>yyleng</i>.
+(These variable names are historical; see
+<i>lex</i>(1).)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p><b>&lt;</b></p></td>
+<td width="10%"></td>
+<td width="78%">
+
+
+<p>An opening angle bracket always matches (consuming no
+input) and causes the parser to begin accumulating matched
+text. This text will be made available to actions in the
+variable <i>yytext</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p><b>&gt;</b></p></td>
+<td width="10%"></td>
+<td width="78%">
+
+
+<p>A closing angle bracket always matches (consuming no
+input) and causes the parser to stop accumulating text for
+<i>yytext</i>.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The above
+<i>element</i>s can be made optional and/or repeatable with
+the following suffixes: <br>
+element&nbsp;<b>?</b></p>
+
+<p style="margin-left:22%;">The element is optional. If
+present on the input, it is consumed and the match succeeds.
+If not present on the input, no text is consumed and the
+match succeeds anyway.</p>
+
+<p style="margin-left:11%;">element&nbsp;<b>+</b></p>
+
+<p style="margin-left:22%;">The element is repeatable. If
+present on the input, one or more occurrences of
+<i>element</i> are consumed and the match succeeds. If no
+occurrences of <i>element</i> are present on the input, the
+match fails.</p>
+
+<p style="margin-left:11%;">element&nbsp;<b>*</b></p>
+
+<p style="margin-left:22%;">The element is optional and
+repeatable. If present on the input, one or more occurrences
+of <i>element</i> are consumed and the match succeeds. If no
+occurrences of <i>element</i> are present on the input, the
+match succeeds anyway.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The above
+elements and suffixes can be converted into predicates (that
+match arbitrary input text and subsequently succeed or fail
+<i>without</i> consuming that input) with the following
+prefixes: <b><br>
+&amp;&nbsp;</b>element</p>
+
+<p style="margin-left:22%;">The predicate succeeds only if
+<i>element</i> can be matched. Input text scanned while
+matching <i>element</i> is not consumed from the input and
+remains available for subsequent matching.</p>
+
+<p style="margin-left:11%;"><b>!&nbsp;</b>element</p>
+
+<p style="margin-left:22%;">The predicate succeeds only if
+<i>element</i> cannot be matched. Input text scanned while
+matching <i>element</i> is not consumed from the input and
+remains available for subsequent matching. A popular idiom
+is</p>
+
+<p style="margin-left:22%; margin-top: 1em">!.</p>
+
+<p style="margin-left:22%; margin-top: 1em">which matches
+the end of file, after the last character of the input has
+already been consumed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A special form
+of the &rsquo;&amp;&rsquo; predicate is provided: <b><br>
+&amp;</b>{&nbsp;expression&nbsp;}</p>
+
+<p style="margin-left:22%;">In this predicate the simple C
+<i>expression</i> (<b>not</b> statement) is evaluated
+immediately when the parser reaches the predicate. If the
+<i>expression</i> yields non&minus;zero (true) the
+&rsquo;match&rsquo; succeeds and the parser continues with
+the next element in the pattern. If the <i>expression</i>
+yields zero (false) the &rsquo;match&rsquo; fails and the
+parser backs up to look for an alternative parse of the
+input.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Several
+elements (with or without prefixes and suffixes) can be
+combined into a <i>sequence</i> by writing them one after
+the other. The entire sequence matches only if each
+individual element within it matches, from left to
+right.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Sequences can
+be separated into disjoint alternatives by the alternation
+operator &rsquo;/&rsquo;. <br>
+
+sequence&minus;1&nbsp;<b>/&nbsp;</b>sequence&minus;2&nbsp;<b>/&nbsp;</b>...&nbsp;<b>/&nbsp;</b>sequence&minus;N</p>
+
+<p style="margin-left:22%;">Each sequence is tried in turn
+until one of them matches, at which time matching for the
+overall pattern succeeds. If none of the sequences matches
+then the match of the overall pattern fails.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Finally, the
+pound sign (#) introduces a comment (discarded) that
+continues until the end of the line.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To summarise
+the above, the parser tries to match the input text against
+a pattern containing literals, names (representing other
+rules), and various operators (written as prefixes,
+suffixes, juxtaposition for sequencing and and infix
+alternation operator) that modify how the elements within
+the pattern are matched. Matches are made from left to
+right, &rsquo;descending&rsquo; into named sub&minus;rules
+as they are encountered. If the matching process fails, the
+parser &rsquo;back tracks&rsquo; (&rsquo;rewinding&rsquo;
+the input appropriately in the process) to find the nearest
+alternative &rsquo;path&rsquo; through the grammar. In other
+words the parser performs a depth&minus;first,
+left&minus;to&minus;right search for the first
+successfully&minus;matching path through the rules. If
+found, the actions along the successful path are executed
+(in the order they were encountered).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that
+predicates are evaluated <i>immediately</i> during the
+search for a successful match, since they contribute to the
+success or failure of the search. Actions, however, are
+evaluated only after a successful match has been found.</p>
+
+<h2>PEG GRAMMAR FOR PEG GRAMMARS
+<a name="PEG GRAMMAR FOR PEG GRAMMARS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The grammar for
+<i>peg</i> grammars is shown below. This will both
+illustrate and formalise the above description.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Grammar
+&lt;&minus; Spacing Definition+ EndOfFile</p>
+
+<p style="margin-left:11%; margin-top: 1em">Definition
+&lt;&minus; Identifier LEFTARROW Expression <br>
+Expression &lt;&minus; Sequence ( SLASH Sequence )* <br>
+Sequence &lt;&minus; Prefix* <br>
+Prefix &lt;&minus; AND Action <br>
+/ ( AND | NOT )? Suffix <br>
+Suffix &lt;&minus; Primary ( QUERY / STAR / PLUS )? <br>
+Primary &lt;&minus; Identifier !LEFTARROW <br>
+/ OPEN Expression CLOSE <br>
+/ Literal <br>
+/ Class <br>
+/ DOT <br>
+/ Action <br>
+/ BEGIN <br>
+/ END</p>
+
+<p style="margin-left:11%; margin-top: 1em">Identifier
+&lt;&minus; &lt; IdentStart IdentCont* &gt; Spacing <br>
+IdentStart &lt;&minus; [a&minus;zA&minus;Z_] <br>
+IdentCont &lt;&minus; IdentStart / [0&minus;9] <br>
+Literal &lt;&minus; [&rsquo;] &lt; ( ![&rsquo;] Char )* &gt;
+[&rsquo;] Spacing <br>
+/ [&quot;] &lt; ( ![&quot;] Char )* &gt; [&quot;] Spacing
+<br>
+Class &lt;&minus; &rsquo;[&rsquo; &lt; ( !&rsquo;]&rsquo;
+Range )* &gt; &rsquo;]&rsquo; Spacing <br>
+Range &lt;&minus; Char &rsquo;&minus;&rsquo; Char / Char
+<br>
+Char &lt;&minus; &rsquo;\\&rsquo;
+[abefnrtv&rsquo;&quot;\[\]\\] <br>
+/ &rsquo;\\&rsquo; [0&minus;3][0&minus;7][0&minus;7] <br>
+/ &rsquo;\\&rsquo; [0&minus;7][0&minus;7]? <br>
+/ &rsquo;\\&rsquo; &rsquo;&minus;&rsquo; <br>
+/ !&rsquo;\\&rsquo; . <br>
+LEFTARROW &lt;&minus; &rsquo;&lt;&minus;&rsquo; Spacing <br>
+SLASH &lt;&minus; &rsquo;/&rsquo; Spacing <br>
+AND &lt;&minus; &rsquo;&amp;&rsquo; Spacing <br>
+NOT &lt;&minus; &rsquo;!&rsquo; Spacing <br>
+QUERY &lt;&minus; &rsquo;?&rsquo; Spacing <br>
+STAR &lt;&minus; &rsquo;*&rsquo; Spacing <br>
+PLUS &lt;&minus; &rsquo;+&rsquo; Spacing <br>
+OPEN &lt;&minus; &rsquo;(&rsquo; Spacing <br>
+CLOSE &lt;&minus; &rsquo;)&rsquo; Spacing <br>
+DOT &lt;&minus; &rsquo;.&rsquo; Spacing <br>
+Spacing &lt;&minus; ( Space / Comment )* <br>
+Comment &lt;&minus; &rsquo;#&rsquo; ( !EndOfLine . )*
+EndOfLine <br>
+Space &lt;&minus; &rsquo; &rsquo; / &rsquo;\t&rsquo; /
+EndOfLine <br>
+EndOfLine &lt;&minus; &rsquo;\r\n&rsquo; / &rsquo;\n&rsquo;
+/ &rsquo;\r&rsquo; <br>
+EndOfFile &lt;&minus; !. <br>
+Action &lt;&minus; &rsquo;{&rsquo; &lt; [^}]* &gt;
+&rsquo;}&rsquo; Spacing <br>
+BEGIN &lt;&minus; &rsquo;&lt;&rsquo; Spacing <br>
+END &lt;&minus; &rsquo;&gt;&rsquo; Spacing</p>
+
+<h2>LEG GRAMMARS
+<a name="LEG GRAMMARS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>leg</i> is a
+variant of <i>peg</i> that adds some features of
+<i>lex</i>(1) and <i>yacc</i>(1). It differs from <i>peg</i>
+in the following ways. <b><br>
+%{&nbsp;</b><i>text...&nbsp;</i><b>%}</b></p>
+
+<p style="margin-left:22%;">A declaration section can
+appear anywhere that a rule definition is expected. The
+<i>text</i> between the delimiters &rsquo;%{&rsquo; and
+&rsquo;%}&rsquo; is copied verbatim to the generated C
+parser code <i>before</i> the code that implements the
+parser itself.</p>
+
+
+<p style="margin-left:11%;"><i>name&nbsp;</i><b>=&nbsp;</b><i>pattern</i></p>
+
+<p style="margin-left:22%;">The &rsquo;assignment&rsquo;
+operator replaces the left arrow operator
+&rsquo;&lt;&minus;&rsquo;.</p>
+
+<p style="margin-left:11%;"><b>rule&minus;name</b></p>
+
+<p style="margin-left:22%;">Hyphens can appear as letters
+in the names of rules. Each hyphen is converted into an
+underscore in the generated C source code. A single hyphen
+&rsquo;&minus;&rsquo; is a legal rule name.</p>
+
+<p style="margin-left:22%; margin-top: 1em">&minus; = [
+\t\n\r]* <br>
+number = [0&minus;9]+ &minus; <br>
+name = [a&minus;zA&minus;Z_][a&minus;zA_Z_0&minus;9]*
+&minus; <br>
+l&minus;paren = &rsquo;(&rsquo; &minus; <br>
+r&minus;paren = &rsquo;)&rsquo; &minus;</p>
+
+<p style="margin-left:22%; margin-top: 1em">This example
+shows how ignored whitespace can be obvious when reading the
+grammar and yet unobtrusive when placed liberally at the end
+of every rule associated with a lexical element.</p>
+
+
+<p style="margin-left:11%;"><i>seq&minus;1&nbsp;</i><b>|&nbsp;</b><i>seq&minus;2</i></p>
+
+<p style="margin-left:22%;">The alternation operator is
+vertical bar &rsquo;|&rsquo; rather than forward slash
+&rsquo;/&rsquo;. The <i>peg</i> rule</p>
+
+<p style="margin-left:22%; margin-top: 1em">name
+&lt;&minus; sequence&minus;1 <br>
+/ sequence&minus;2 <br>
+/ sequence&minus;3</p>
+
+<p style="margin-left:22%; margin-top: 1em">is therefore
+written</p>
+
+<p style="margin-left:22%; margin-top: 1em">name =
+sequence&minus;1 <br>
+| sequence&minus;2 <br>
+| sequence&minus;3 <br>
+;</p>
+
+<p style="margin-left:22%; margin-top: 1em">in <i>leg</i>
+(with the final semicolon being optional, as described
+next).</p>
+
+
+<p style="margin-left:11%;"><i>@{&nbsp;action&nbsp;}</i></p>
+
+<p style="margin-left:22%;">Actions prefixed with an
+&rsquo;at&rsquo; symbol will be performed during parsing, at
+the time they are encountered while matching the input text
+with a rule. Because of back-tracking in the PEG parsing
+algorithm, actions prefixed with &rsquo;@&rsquo; might be
+performed multiple times for the same input text. (The usual
+behviour of actions is that they are saved up until matching
+is complete, and then those that are part of the final
+derivation are performed in left-to-right order.) The
+variable <i>yytext</i> is available within these
+actions.</p>
+
+
+<p style="margin-left:11%;"><i>exp&nbsp;</i><b>~&nbsp;</b><i>{&nbsp;action&nbsp;}</i></p>
+
+<p style="margin-left:22%;">A postfix operator
+<b>~</b><i>{&nbsp;action&nbsp;}</i> can be placed after any
+expression and will behave like a normal action (arbitrary C
+code) except that it is invoked only when <i>exp</i> fails.
+It binds less tightly than any other operator except
+alternation and sequencing, and is intended to make error
+handling and recovery code easier to write. Note that
+<i>yytext</i> and <i>yyleng</i> are not available inside
+these actions, but the pointer variable <i>yy</i> is
+available to give the code access to any user&minus;defined
+members of the parser state (see &quot;CUSTOMISING THE
+PARSER&quot; below). Note also that <i>exp</i> is always a
+single expression; to invoke an error action for any failure
+within a sequence, parentheses must be used to group the
+sequence into a single expression.</p>
+
+<p style="margin-left:22%; margin-top: 1em">rule = e1 e2 e3
+~{ error(&quot;e[12] ok; e3 has failed&quot;); } <br>
+| ...</p>
+
+<p style="margin-left:22%; margin-top: 1em">rule = (e1 e2
+e3) ~{ error(&quot;one of e[123] has failed&quot;); } <br>
+| ...</p>
+
+
+<p style="margin-left:11%;"><i>pattern&nbsp;</i><b>;</b></p>
+
+<p style="margin-left:22%;">A semicolon punctuator can
+optionally terminate a <i>pattern</i>.</p>
+
+
+<p style="margin-left:11%;"><b>%%&nbsp;</b><i>text...</i></p>
+
+<p style="margin-left:22%;">A double percent
+&rsquo;%%&rsquo; terminates the rules (and declarations)
+section of the grammar. All <i>text</i> following
+&rsquo;%%&rsquo; is copied verbatim to the generated C
+parser code <i>after</i> the parser implementation code.</p>
+
+
+<p style="margin-left:11%;"><b>$$&nbsp;=&nbsp;</b><i>value</i></p>
+
+<p style="margin-left:22%;">A sub&minus;rule can return a
+semantic <i>value</i> from an action by assigning it to the
+pseudo&minus;variable &rsquo;$$&rsquo;. All semantic values
+must have the same type (which defaults to
+&rsquo;int&rsquo;). This type can be changed by defining
+YYSTYPE in a declaration section.</p>
+
+
+<p style="margin-left:11%;"><i>identifier</i><b>:</b><i>name</i></p>
+
+<p style="margin-left:22%;">The semantic value returned (by
+assigning to &rsquo;$$&rsquo;) from the sub&minus;rule
+<i>name</i> is associated with the <i>identifier</i> and can
+be referred to in subsequent actions.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The desk
+calculator example below illustrates the use of
+&rsquo;$$&rsquo; and &rsquo;:&rsquo;.</p>
+
+<h2>LEG EXAMPLE: A DESK CALCULATOR
+<a name="LEG EXAMPLE: A DESK CALCULATOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The extensions
+in <i>leg</i> described above allow useful parsers and
+evaluators (including declarations, grammar rules, and
+supporting C functions such as &rsquo;main&rsquo;) to be
+kept within a single source file. To illustrate this we show
+a simple desk calculator supporting the four common
+arithmetic operators and named variables. The intermediate
+results of arithmetic evaluation will be accumulated on an
+implicit stack by returning them as semantic values from
+sub&minus;rules.</p>
+
+<p style="margin-left:11%; margin-top: 1em">%{ <br>
+#include &lt;stdio.h&gt; /* printf() */ <br>
+#include &lt;stdlib.h&gt; /* atoi() */ <br>
+int vars[26]; <br>
+%}</p>
+
+<p style="margin-left:11%; margin-top: 1em">Stmt = &minus;
+e:Expr EOL { printf(&quot;%d\n&quot;, e); } <br>
+| ( !EOL . )* EOL { printf(&quot;error\n&quot;); }</p>
+
+<p style="margin-left:11%; margin-top: 1em">Expr = i:ID
+ASSIGN s:Sum { $$ = vars[i] = s; } <br>
+| s:Sum { $$ = s; }</p>
+
+<p style="margin-left:11%; margin-top: 1em">Sum = l:Product
+<br>
+( PLUS r:Product { l += r; } <br>
+| MINUS r:Product { l &minus;= r; } <br>
+)* { $$ = l; }</p>
+
+<p style="margin-left:11%; margin-top: 1em">Product =
+l:Value <br>
+( TIMES r:Value { l *= r; } <br>
+| DIVIDE r:Value { l /= r; } <br>
+)* { $$ = l; }</p>
+
+<p style="margin-left:11%; margin-top: 1em">Value =
+i:NUMBER { $$ = atoi(yytext); } <br>
+| i:ID !ASSIGN { $$ = vars[i]; } <br>
+| OPEN i:Expr CLOSE { $$ = i; }</p>
+
+<p style="margin-left:11%; margin-top: 1em">NUMBER = &lt;
+[0&minus;9]+ &gt; &minus; { $$ = atoi(yytext); } <br>
+ID = &lt; [a&minus;z] &gt; &minus; { $$ = yytext[0] &minus;
+&rsquo;a&rsquo;; } <br>
+ASSIGN = &rsquo;=&rsquo; &minus; <br>
+PLUS = &rsquo;+&rsquo; &minus; <br>
+MINUS = &rsquo;&minus;&rsquo; &minus; <br>
+TIMES = &rsquo;*&rsquo; &minus; <br>
+DIVIDE = &rsquo;/&rsquo; &minus; <br>
+OPEN = &rsquo;(&rsquo; &minus; <br>
+CLOSE = &rsquo;)&rsquo; &minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">&minus; = [
+\t]* <br>
+EOL = &rsquo;\n&rsquo; | &rsquo;\r\n&rsquo; |
+&rsquo;\r&rsquo; | &rsquo;;&rsquo;</p>
+
+<p style="margin-left:11%; margin-top: 1em">%%</p>
+
+<p style="margin-left:11%; margin-top: 1em">int main() <br>
+{ <br>
+while (yyparse()) <br>
+; <br>
+return 0; <br>
+}</p>
+
+<h2>LEG GRAMMAR FOR LEG GRAMMARS
+<a name="LEG GRAMMAR FOR LEG GRAMMARS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The grammar for
+<i>leg</i> grammars is shown below. This will both
+illustrate and formalise the above description.</p>
+
+<p style="margin-left:11%; margin-top: 1em">grammar =
+&minus; <br>
+( declaration | definition )+ <br>
+trailer? end&minus;of&minus;file</p>
+
+<p style="margin-left:11%; margin-top: 1em">declaration =
+&rsquo;%{&rsquo; &lt; ( !&rsquo;%}&rsquo; . )* &gt;
+RPERCENT</p>
+
+<p style="margin-left:11%; margin-top: 1em">trailer =
+&rsquo;%%&rsquo; &lt; .* &gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">definition =
+identifier EQUAL expression SEMICOLON?</p>
+
+<p style="margin-left:11%; margin-top: 1em">expression =
+sequence ( BAR sequence )*</p>
+
+<p style="margin-left:11%; margin-top: 1em">sequence =
+error+</p>
+
+<p style="margin-left:11%; margin-top: 1em">error = prefix
+( TILDE action )?</p>
+
+<p style="margin-left:11%; margin-top: 1em">prefix = AND
+action <br>
+| ( AND | NOT )? suffix</p>
+
+<p style="margin-left:11%; margin-top: 1em">suffix =
+primary ( QUERY | STAR | PLUS )?</p>
+
+<p style="margin-left:11%; margin-top: 1em">primary =
+identifier COLON identifier !EQUAL <br>
+| identifier !EQUAL <br>
+| OPEN expression CLOSE <br>
+| literal <br>
+| class <br>
+| DOT <br>
+| action <br>
+| BEGIN <br>
+| END</p>
+
+<p style="margin-left:11%; margin-top: 1em">identifier =
+&lt;
+[&minus;a&minus;zA&minus;Z_][&minus;a&minus;zA&minus;Z_0&minus;9]*
+&gt; &minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">literal =
+[&rsquo;] &lt; ( ![&rsquo;] char )* &gt; [&rsquo;] &minus;
+<br>
+| [&quot;] &lt; ( ![&quot;] char )* &gt; [&quot;]
+&minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">class =
+&rsquo;[&rsquo; &lt; ( !&rsquo;]&rsquo; range )* &gt;
+&rsquo;]&rsquo; &minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">range = char
+&rsquo;&minus;&rsquo; char | char</p>
+
+<p style="margin-left:11%; margin-top: 1em">char =
+&rsquo;\\&rsquo; [abefnrtv&rsquo;&quot;\[\]\\] <br>
+| &rsquo;\\&rsquo; [0&minus;3][0&minus;7][0&minus;7] <br>
+| &rsquo;\\&rsquo; [0&minus;7][0&minus;7]? <br>
+| !&rsquo;\\&rsquo; .</p>
+
+<p style="margin-left:11%; margin-top: 1em">action =
+&rsquo;{&rsquo; &lt; braces* &gt; &rsquo;}&rsquo;
+&minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">braces =
+&rsquo;{&rsquo; braces* &rsquo;}&rsquo; <br>
+| !&rsquo;}&rsquo; .</p>
+
+<p style="margin-left:11%; margin-top: 1em">EQUAL =
+&rsquo;=&rsquo; &minus; <br>
+COLON = &rsquo;:&rsquo; &minus; <br>
+SEMICOLON = &rsquo;;&rsquo; &minus; <br>
+BAR = &rsquo;|&rsquo; &minus; <br>
+AND = &rsquo;&amp;&rsquo; &minus; <br>
+NOT = &rsquo;!&rsquo; &minus; <br>
+QUERY = &rsquo;?&rsquo; &minus; <br>
+STAR = &rsquo;*&rsquo; &minus; <br>
+PLUS = &rsquo;+&rsquo; &minus; <br>
+OPEN = &rsquo;(&rsquo; &minus; <br>
+CLOSE = &rsquo;)&rsquo; &minus; <br>
+DOT = &rsquo;.&rsquo; &minus; <br>
+BEGIN = &rsquo;&lt;&rsquo; &minus; <br>
+END = &rsquo;&gt;&rsquo; &minus; <br>
+TILDE = &rsquo;~&rsquo; &minus; <br>
+RPERCENT = &rsquo;%}&rsquo; &minus;</p>
+
+<p style="margin-left:11%; margin-top: 1em">&minus; = (
+space | comment )* <br>
+space = &rsquo; &rsquo; | &rsquo;\t&rsquo; |
+end&minus;of&minus;line <br>
+comment = &rsquo;#&rsquo; ( !end&minus;of&minus;line . )*
+end&minus;of&minus;line <br>
+end&minus;of&minus;line = &rsquo;\r\n&rsquo; |
+&rsquo;\n&rsquo; | &rsquo;\r&rsquo; <br>
+end&minus;of&minus;file = !.</p>
+
+<h2>CUSTOMISING THE PARSER
+<a name="CUSTOMISING THE PARSER"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The following
+symbols can be redefined in declaration sections to modify
+the generated parser code. <b><br>
+YYSTYPE</b></p>
+
+<p style="margin-left:22%;">The semantic value type. The
+pseudo&minus;variable &rsquo;$$&rsquo; and the identifiers
+&rsquo;bound&rsquo; to rule results with the colon operator
+&rsquo;:&rsquo; should all be considered as being declared
+to have this type. The default value is
+&rsquo;int&rsquo;.</p>
+
+<p style="margin-left:11%;"><b>YYPARSE</b></p>
+
+<p style="margin-left:22%;">The name of the main entry
+point to the parser. The default value is
+&rsquo;yyparse&rsquo;.</p>
+
+<p style="margin-left:11%;"><b>YYPARSEFROM</b></p>
+
+<p style="margin-left:22%;">The name of an alternative
+entry point to the parser. This function expects one
+argument: the function corresponding to the rule from which
+the search for a match should begin. The default is
+&rsquo;yyparsefrom&rsquo;. Note that yyparse() is defined
+as</p>
+
+<p style="margin-left:22%; margin-top: 1em">int yyparse() {
+return yyparsefrom(yy_foo); }</p>
+
+<p style="margin-left:22%; margin-top: 1em">where
+&rsquo;foo&rsquo; is the name of the first rule in the
+grammar.</p>
+
+
+<p style="margin-left:11%;"><b>YY_INPUT(</b><i>buf</i><b>,&nbsp;</b><i>result</i><b>,&nbsp;</b><i>max_size</i><b>)</b></p>
+
+<p style="margin-left:22%;">This macro is invoked by the
+parser to obtain more input text. <i>buf</i> points to an
+area of memory that can hold at most <i>max_size</i>
+characters. The macro should copy input text to <i>buf</i>
+and then assign the integer variable <i>result</i> to
+indicate the number of characters copied. If no more input
+is available, the macro should assign 0 to <i>result</i>. By
+default, the YY_INPUT macro is defined as follows.</p>
+
+<p style="margin-left:22%; margin-top: 1em">#define
+YY_INPUT(buf, result, max_size) \ <br>
+{ \ <br>
+int yyc= getchar(); \ <br>
+result= (EOF == yyc) ? 0 : (*(buf)= yyc, 1); \ <br>
+}</p>
+
+<p style="margin-left:22%; margin-top: 1em">Note that if
+YY_CTX_LOCAL is defined (see below) then an additional first
+argument, containing the parser context, is passed to
+YY_INPUT.</p>
+
+<p style="margin-left:11%;"><b>YY_DEBUG</b></p>
+
+<p style="margin-left:22%;">If this symbols is defined then
+additional code will be included in the parser that prints
+vast quantities of arcane information to the standard error
+while the parser is running.</p>
+
+<p style="margin-left:11%;"><b>YY_BEGIN</b></p>
+
+<p style="margin-left:22%;">This macro is invoked to mark
+the start of input text that will be made available in
+actions as &rsquo;yytext&rsquo;. This corresponds to
+occurrences of &rsquo;&lt;&rsquo; in the grammar. These are
+converted into predicates that are expected to succeed. The
+default definition</p>
+
+<p style="margin-left:22%; margin-top: 1em">#define
+YY_BEGIN (yybegin= yypos, 1)</p>
+
+<p style="margin-left:22%; margin-top: 1em">therefore saves
+the current input position and returns 1
+(&rsquo;true&rsquo;) as the result of the predicate.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>YY_END</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>This macros corresponds to &rsquo;&gt;&rsquo; in the
+grammar. Again, it is a predicate so the default definition
+saves the input position before
+&rsquo;succeeding&rsquo;.</p> </td></tr>
+</table>
+
+<p style="margin-left:22%; margin-top: 1em">#define YY_END
+(yyend= yypos, 1)</p>
+
+
+<p style="margin-left:11%;"><b>YY_PARSE(</b><i>T</i><b>)</b></p>
+
+<p style="margin-left:22%;">This macro declares the parser
+entry points (yyparse and yyparsefrom) to be of type
+<i>T</i>. The default definition</p>
+
+<p style="margin-left:22%; margin-top: 1em">#define
+YY_PARSE(T) T</p>
+
+<p style="margin-left:22%; margin-top: 1em">leaves
+yyparse() and yyparsefrom() with global visibility. If they
+should not be externally visible in other source files, this
+macro can be redefined to declare them
+&rsquo;static&rsquo;.</p>
+
+<p style="margin-left:22%; margin-top: 1em">#define
+YY_PARSE(T) static T</p>
+
+<p style="margin-left:11%;"><b>YY_CTX_LOCAL</b></p>
+
+<p style="margin-left:22%;">If this symbol is defined
+during compilation of a generated parser then global parser
+state will be kept in a structure of type
+&rsquo;yycontext&rsquo; which can be declared as a local
+variable. This allows multiple instances of parsers to
+coexist and to be thread&minus;safe. The parsing function
+<i>yyparse</i>() will be declared to expect a first argument
+of type &rsquo;yycontext *&rsquo;, an instance of the
+structure holding the global state for the parser. This
+instance must be allocated and initialised to zero by the
+client. A trivial but complete example is as follows.</p>
+
+<p style="margin-left:22%; margin-top: 1em">#include
+&lt;stdio.h&gt;</p>
+
+<p style="margin-left:22%; margin-top: 1em">#define
+YY_CTX_LOCAL</p>
+
+<p style="margin-left:22%; margin-top: 1em">#include
+&quot;the&minus;generated&minus;parser.peg.c&quot;</p>
+
+<p style="margin-left:22%; margin-top: 1em">int main() <br>
+{ <br>
+yycontext ctx; <br>
+memset(&amp;ctx, 0, sizeof(yycontext)); <br>
+while (yyparse(&amp;ctx)); <br>
+return 0; <br>
+}</p>
+
+<p style="margin-left:22%; margin-top: 1em">Note that if
+this symbol is undefined then the compiled parser will
+statically allocate its global state and will be neither
+reentrant nor thread&minus;safe. Note also that the parser
+yycontext structure is initialised automatically the first
+time <i>yyparse</i>() is called; this structure <b>must</b>
+therefore be properly initialised to zero before the first
+call to <i>yyparse</i>().</p>
+
+<p style="margin-left:11%;"><b>YY_CTX_MEMBERS</b></p>
+
+<p style="margin-left:22%;">If YY_CTX_LOCAL is defined (see
+above) then the macro YY_CTX_MEMBERS can be defined to
+expand to any additional member field declarations that the
+client would like included in the declaration of the
+&rsquo;yycontext&rsquo; structure type. These additional
+members are otherwise ignored by the generated parser. The
+instance of &rsquo;yycontext&rsquo; associated with the
+currently&minus;active parser is available within actions as
+the pointer variable <i>yy</i>.</p>
+
+<p style="margin-left:11%;"><b>YY_BUFFER_SIZE</b></p>
+
+<p style="margin-left:22%;">The initial size of the text
+buffer, in bytes. The default is 1024 and the buffer size is
+doubled whenever required to meet demand during parsing. An
+application that typically parses much longer strings could
+increase this to avoid unnecessary buffer reallocation.</p>
+
+<p style="margin-left:11%;"><b>YY_STACK_SIZE</b></p>
+
+<p style="margin-left:22%;">The initial size of the
+variable and action stacks. The default is 128, which is
+doubled whenever required to meet demand during parsing.
+Applications that have deep call stacks with many local
+variables, or that perform many actions after a single
+successful match, could increase this to avoid unnecessary
+buffer reallocation.</p>
+
+
+<p style="margin-left:11%;"><b>YY_MALLOC(</b><i>YY</i><b>,&nbsp;</b><i>SIZE</i><b>)</b></p>
+
+<p style="margin-left:22%;">The memory allocator for all
+parser&minus;related storage. The parameters are the current
+yycontext structure and the number of bytes to allocate. The
+default definition is: malloc(<i>SIZE</i>)</p>
+
+
+<p style="margin-left:11%;"><b>YY_REALLOC(</b><i>YY</i><b>,&nbsp;</b><i>PTR</i><b>,&nbsp;</b><i>SIZE</i><b>)</b></p>
+
+<p style="margin-left:22%;">The memory reallocator for
+dynamically&minus;grown storage (such as text buffers and
+variable stacks). The parameters are the current yycontext
+structure, the previously&minus;allocated storage, and the
+number of bytes to which that storage should be grown. The
+default definition is:
+realloc(<i>PTR</i>,&nbsp;<i>SIZE</i>)</p>
+
+
+<p style="margin-left:11%;"><b>YY_FREE(</b><i>YY</i><b>,&nbsp;</b><i>PTR</i><b>)</b></p>
+
+<p style="margin-left:22%;">The memory deallocator. The
+parameters are the current yycontext structure and the
+storage to deallocate. The default definition is:
+free(<i>PTR</i>)</p>
+
+<p style="margin-left:11%;"><b>YYRELEASE</b></p>
+
+<p style="margin-left:22%;">The name of the function that
+releases all resources held by a yycontext structure. The
+default value is &rsquo;yyrelease&rsquo;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The following
+variables can be referred to within actions. <b><br>
+char *yybuf</b></p>
+
+<p style="margin-left:22%;">This variable points to the
+parser&rsquo;s input buffer used to store input text that
+has not yet been matched.</p>
+
+<p style="margin-left:11%;"><b>int yypos</b></p>
+
+<p style="margin-left:22%;">This is the offset (in yybuf)
+of the next character to be matched and consumed.</p>
+
+<p style="margin-left:11%;"><b>char *yytext</b></p>
+
+<p style="margin-left:22%;">The most recent matched text
+delimited by &rsquo;&lt;&rsquo; and &rsquo;&gt;&rsquo; is
+stored in this variable.</p>
+
+<p style="margin-left:11%;"><b>int yyleng</b></p>
+
+<p style="margin-left:22%;">This variable indicates the
+number of characters in &rsquo;yytext&rsquo;.</p>
+
+<p style="margin-left:11%;"><b>yycontext *yy</b></p>
+
+<p style="margin-left:22%;">This variable points to the
+instance of &rsquo;yycontext&rsquo; associated with the
+currently&minus;active parser.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Programs that
+wish to release all the resources associated with a parser
+can use the following function. <b><br>
+yyrelease(yycontext</b><i>*</i><b>yy</b><i>)</i></p>
+
+<p style="margin-left:22%;">Returns all
+parser&minus;allocated storage associated with <i>yy</i> to
+the system. The storage will be reallocated on the next call
+to <i>yyparse</i>().</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that the
+storage for the yycontext structure itself is never
+allocated or reclaimed implicitly. The application must
+allocate these structures in automatic storage, or use
+<i>calloc</i>() and <i>free</i>() to manage them explicitly.
+The example in the following section demonstrates one
+approach to resource management.</p>
+
+<h2>LEG EXAMPLE: EXTENDING THE PARSER&rsquo;S CONTEXT
+<a name="LEG EXAMPLE: EXTENDING THE PARSER&rsquo;S CONTEXT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The <i>yy</i>
+variable passed to actions contains the state of the parser
+plus any additional fields defined by YY_CTX_MEMBERS. Theses
+fields can be used to store application&minus;specific
+information that is global to a particular call of
+<i>yyparse</i>(). A trivial but complete <i>leg</i> example
+follows in which the yycontext structure is extended with a
+<i>count</i> of the number of newline characters seen in the
+input so far (the grammar otherwise consumes and ignores the
+entire input). The caller of <i>yyparse</i>() uses
+<i>count</i> to print the number of lines of input that were
+read.</p>
+
+<p style="margin-left:11%; margin-top: 1em">%{ <br>
+#define YY_CTX_LOCAL 1 <br>
+#define YY_CTX_MEMBERS \ <br>
+int count; <br>
+%}</p>
+
+<p style="margin-left:11%; margin-top: 1em">Char =
+(&rsquo;\n&rsquo; | &rsquo;\r\n&rsquo; | &rsquo;\r&rsquo;) {
+yy&minus;&gt;count++ } <br>
+| .</p>
+
+<p style="margin-left:11%; margin-top: 1em">%%</p>
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;stdio.h&gt; <br>
+#include &lt;string.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">int main() <br>
+{ <br>
+/* create a local parser context in automatic storage */
+<br>
+yycontext yy; <br>
+/* the context *must* be initialised to zero before first
+use*/ <br>
+memset(&amp;yy, 0, sizeof(yy));</p>
+
+<p style="margin-left:11%; margin-top: 1em">while
+(yyparse(&amp;yy)) <br>
+; <br>
+printf(&quot;%d newlines\n&quot;, yy.count);</p>
+
+<p style="margin-left:11%; margin-top: 1em">/* release all
+resources associated with the context */ <br>
+yyrelease(&amp;yy);</p>
+
+<p style="margin-left:11%; margin-top: 1em">return 0; <br>
+}</p>
+
+<h2>DIAGNOSTICS
+<a name="DIAGNOSTICS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>peg</i> and
+<i>leg</i> warn about the following conditions while
+converting a grammar into a parser. <b><br>
+syntax error</b></p>
+
+<p style="margin-left:22%;">The input grammar was malformed
+in some way. The error message will include the text about
+to be matched (often backed up a huge amount from the actual
+location of the error) and the line number of the most
+recently considered character (which is often the real
+location of the problem).</p>
+
+<p style="margin-left:11%;"><b>rule &rsquo;foo&rsquo; used
+but not defined</b></p>
+
+<p style="margin-left:22%;">The grammar referred to a rule
+named &rsquo;foo&rsquo; but no definition for it was given.
+Attempting to use the generated parser will likely result in
+errors from the linker due to undefined symbols associated
+with the missing rule.</p>
+
+<p style="margin-left:11%;"><b>rule &rsquo;foo&rsquo;
+defined but not used</b></p>
+
+<p style="margin-left:22%;">The grammar defined a rule
+named &rsquo;foo&rsquo; and then ignored it. The code
+associated with the rule is included in the generated parser
+which will in all other respects be healthy.</p>
+
+<p style="margin-left:11%;"><b>possible infinite left
+recursion in rule &rsquo;foo&rsquo;</b></p>
+
+<p style="margin-left:22%;">There exists at least one path
+through the grammar that leads from the rule
+&rsquo;foo&rsquo; back to (a recursive invocation of) the
+same rule without consuming any input.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Left recursion,
+especially that found in standards documents, is often
+&rsquo;direct&rsquo; and implies trivial repetition.</p>
+
+<p style="margin-left:11%; margin-top: 1em"># (6.7.6) <br>
+direct&minus;abstract&minus;declarator = <br>
+LPAREN abstract&minus;declarator RPAREN <br>
+| direct&minus;abstract&minus;declarator? LBRACKET
+assign&minus;expr? RBRACKET <br>
+| direct&minus;abstract&minus;declarator? LBRACKET STAR
+RBRACKET <br>
+| direct&minus;abstract&minus;declarator? LPAREN
+param&minus;type&minus;list? RPAREN</p>
+
+<p style="margin-left:11%; margin-top: 1em">The recursion
+can easily be eliminated by converting the parts of the
+pattern following the recursion into a repeatable
+suffix.</p>
+
+<p style="margin-left:11%; margin-top: 1em"># (6.7.6) <br>
+direct&minus;abstract&minus;declarator = <br>
+direct&minus;abstract&minus;declarator&minus;head? <br>
+direct&minus;abstract&minus;declarator&minus;tail*</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">direct&minus;abstract&minus;declarator&minus;head
+= <br>
+LPAREN abstract&minus;declarator RPAREN</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">direct&minus;abstract&minus;declarator&minus;tail
+= <br>
+LBRACKET assign&minus;expr? RBRACKET <br>
+| LBRACKET STAR RBRACKET <br>
+| LPAREN param&minus;type&minus;list? RPAREN</p>
+
+<h2>CAVEATS
+<a name="CAVEATS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A parser that
+accepts empty input will <i>always</i> succeed. Consider the
+following example, not atypical of a first attempt to write
+a PEG&minus;based parser:</p>
+
+<p style="margin-left:11%; margin-top: 1em">Program =
+Expression* <br>
+Expression = &quot;whatever&quot; <br>
+%% <br>
+int main() { <br>
+while (yyparse()) <br>
+puts(&quot;success!&quot;); <br>
+return 0; <br>
+}</p>
+
+<p style="margin-left:11%; margin-top: 1em">This program
+loops forever, no matter what (if any) input is provided on
+stdin. Many fixes are possible, the easiest being to insist
+that the parser always consumes some non&minus;empty input.
+Changing the first line to</p>
+
+<p style="margin-left:11%; margin-top: 1em">Program =
+Expression+</p>
+
+<p style="margin-left:11%; margin-top: 1em">accomplishes
+this. If the parser is expected to consume the entire input,
+then explicitly requiring the end&minus;of&minus;file is
+also highly recommended:</p>
+
+<p style="margin-left:11%; margin-top: 1em">Program =
+Expression+ !.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This works
+because the parser will only fail to match (&quot;!&quot;
+predicate) any character at all (&quot;.&quot; expression)
+when it attempts to read beyond the end of the input.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">You have to
+type &rsquo;man peg&rsquo; to read the manual page for
+<i>leg</i>(1).</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+&rsquo;yy&rsquo; and &rsquo;YY&rsquo; prefixes cannot be
+changed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Left recursion
+is detected in the input grammar but is not handled
+correctly in the generated parser.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Diagnostics for
+errors in the input grammar are obscure and not particularly
+helpful.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The operators
+<b>!&nbsp;</b>and <b>~</b> should really be named the other
+way around.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Several
+commonly&minus;used <i>lex</i>(1) features (yywrap(), yyin,
+etc.) are completely absent.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The generated
+parser does not contain &rsquo;#line&rsquo; directives to
+direct C compiler errors back to the grammar description
+when appropriate.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">D. Val Schorre,
+<i>META II, a syntax&minus;oriented compiler writing
+language,</i> 19th ACM National Conference, 1964,
+pp.&nbsp;41.301&minus;&minus;41.311. Describes a
+self&minus;implementing parser generator for analytic
+grammars with no backtracking.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Alexander
+Birman, <i>The TMG Recognition Schema,</i> Ph.D.
+dissertation, Princeton, 1970. A mathematical treatment of
+the power and complexity of recursive&minus;descent parsing
+with backtracking.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Bryan Ford,
+<i>Parsing Expression Grammars: A Recognition&minus;Based
+Syntactic Foundation,</i> ACM SIGPLAN Symposium on
+Principles of Programming Languages, 2004. Defines PEGs and
+analyses them in relation to context&minus;free and regular
+grammars. Introduces the syntax adopted in <i>peg</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The standard
+Unix utilities <i>lex</i>(1) and <i>yacc</i>(1) which
+influenced the syntax and features of <i>leg</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The source code
+for <i>peg</i> and <i>leg</i> whose grammar parsers are
+written using themselves.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The latest
+version of this software and documentation:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">http://piumarta.com/software/peg</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>peg</i>,
+<i>leg</i> and this manual page were written by Ian Piumarta
+(first&minus;name at last&minus;name dot com) while
+investigating the viability of regular and
+parsing&minus;expression grammars for efficiently extracting
+type and signature information from C header files.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Please send bug
+reports and suggestions for improvements to the author at
+the above address.</p>
+<hr>
+</body>
+</html>
