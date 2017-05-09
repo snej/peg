@@ -5,18 +5,18 @@ PEG
 [SYNOPSIS](#SYNOPSIS)  
 [DESCRIPTION](#DESCRIPTION)  
 [OPTIONS](#OPTIONS)  
-[A SIMPLE EXAMPLE](#A%20SIMPLE%20EXAMPLE)  
-[PEG GRAMMARS](#PEG%20GRAMMARS)  
-[PEG GRAMMAR FOR PEG GRAMMARS](#PEG%20GRAMMAR%20FOR%20PEG%20GRAMMARS)  
-[LEG GRAMMARS](#LEG%20GRAMMARS)  
-[LEG EXAMPLE: A DESK CALCULATOR](#LEG%20EXAMPLE%20A%20DESK%20CALCULATOR)  
-[LEG GRAMMAR FOR LEG GRAMMARS](#LEG%20GRAMMAR%20FOR%20LEG%20GRAMMARS)  
-[CUSTOMISING THE PARSER](#CUSTOMISING%20THE%20PARSER)  
-[LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG%20EXAMPLE%20EXTENDING%20THE%20PARSERS%20CONTEXT)  
+[A SIMPLE EXAMPLE](#A_SIMPLE_EXAMPLE)  
+[PEG GRAMMARS](#PEG_GRAMMARS)  
+[PEG GRAMMAR FOR PEG GRAMMARS](#PEG_GRAMMAR_FOR_PEG_GRAMMARS)  
+[LEG GRAMMARS](#LEG_GRAMMARS)  
+[LEG EXAMPLE: A DESK CALCULATOR](#LEG_EXAMPLE_A_DESK_CALCULATOR)  
+[LEG GRAMMAR FOR LEG GRAMMARS](#LEG_GRAMMAR_FOR_LEG_GRAMMARS)  
+[CUSTOMISING THE PARSER](#CUSTOMISING_THE_PARSER)  
+[LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT](#LEG_EXAMPLE_EXTENDING_THE_PARSERS_CONTEXT)  
 [DIAGNOSTICS](#DIAGNOSTICS)  
 [CAVEATS](#CAVEATS)  
 [BUGS](#BUGS)  
-[SEE ALSO](#SEE%20ALSO)  
+[SEE ALSO](#SEE_ALSO)  
 [AUTHOR](#AUTHOR)  
 
 * * * * *
@@ -77,8 +77,9 @@ OPTIONS
 </tbody>
 </table>
 
-A SIMPLE EXAMPLE
-----------------
+<a name="A_SIMPLE_EXAMPLE">
+<h2>A SIMPLE EXAMPLE</h2>
+</a>
 
 The following *peg* input specifies a grammar with a single rule (called ’start’) that is satisfied when the input contains the string "username".
 ```
@@ -116,8 +117,9 @@ int main()
     return 0;
 }
 ```
-PEG GRAMMARS
-------------
+<a name="PEG_GRAMMARS">
+<h2>PEG GRAMMARS</h2>
+</a>
 
 A grammar consists of a set of named rules.
 ```
@@ -179,8 +181,9 @@ _lex_(1).)
 |   <    | An opening angle bracket always matches (consuming no input) and causes the parser to begin accumulating matched text. This text will be made available to actions in the variable _yytext_. |
 |   >    | A closing angle bracket always matches (consuming no input) and causes the parser to stop accumulating text for _yytext_.|
 
-PEG GRAMMAR FOR PEG GRAMMARS
-----------------------------
+<a name="PEG_GRAMMAR_FOR_PEG_GRAMMARS">
+<h2>PEG GRAMMAR FOR PEG GRAMMARS</h2>
+</a>
 
 The grammar for *peg* grammars is shown below. This will both illustrate and formalise the above description.
 ```peg
@@ -232,8 +235,9 @@ The grammar for *peg* grammars is shown below. This will both illustrate and for
            BEGIN           <- '<' Spacing
            END             <- '>' Spacing
 ```
-LEG GRAMMARS
-------------
+<a name="LEG_GRAMMARS">
+<h2>LEG GRAMMARS</h2>
+</a>
 
 _leg_ is a variant of _peg_ that adds some features of _lex_(1)
 and _yacc_(1). It differs from _peg_ in the following ways.
@@ -334,7 +338,7 @@ section of the grammar. All _text_ following `%%` is copied
 verbatim to the generated C parser code _after_ the parser
 implementation code.
 
-**$$ = _value_ **
+** $$ = _value_ **
 
 A sub-rule can return a semantic _value_ from an action by
 assigning it to the pseudo&minus;variable `$$`. All semantic
@@ -351,8 +355,9 @@ referred to in subsequent actions.
 The desk calculator example below illustrates the use of
 `$$` and `:`.
 
-LEG EXAMPLE: A DESK CALCULATOR
-------------------------------
+<a name="LEG_EXAMPLE_A_DESK_CALCULATOR">
+<h2>LEG EXAMPLE: A DESK CALCULATOR</h2>
+</a>
 
 The extensions in *leg* described above allow useful parsers and evaluators (including declarations, grammar rules, and supporting C functions such as ’main’) to be kept within a single source file. To illustrate this we show a simple desk calculator supporting the four common arithmetic operators and named variables. The intermediate results of arithmetic evaluation will be accumulated on an implicit stack by returning them as semantic values from sub−rules.
 ```bison
@@ -404,6 +409,7 @@ The extensions in *leg* described above allow useful parsers and evaluators (inc
              return 0;
            }
 ```
+<a name="LEG_GRAMMAR_FOR_LEG_GRAMMARS"></a>
 LEG GRAMMAR FOR LEG GRAMMARS
 ----------------------------
 
@@ -482,27 +488,44 @@ The grammar for *leg* grammars is shown below. This will both illustrate and for
            end-of-line =   '\r\n' | '\n' | '\r'
            end-of-file =   !.
 ```
-
+<a name="CUSTOMISING_THE_PARSER"></a>
 CUSTOMISING THE PARSER
 ----------------------
 
 The following symbols can be redefined in declaration sections to modify the generated parser code.
   
-**YYSTYPE**  
-The semantic value type. The pseudo−variable `$$` and the identifiers ’bound’ to rule results with the colon operator ’:’ should all be considered as being declared to have this type. The default value is ’int’.
+**YYSTYPE**
+  
+The semantic value type. The pseudo−variable `$$` and the
+identifiers ’bound’ to rule results with the colon operator `:`
+should all be considered as being declared to have this type. The
+default value is `int`.
 
-**YYPARSE**  
-The name of the main entry point to the parser. The default value is ’yyparse’.
+**YYPARSE**
 
-**YYPARSEFROM**  
-The name of an alternative entry point to the parser. This function expects one argument: the function corresponding to the rule from which the search for a match should begin. The default is ’yyparsefrom’. Note that yyparse() is defined as
+The name of the main entry point to the parser. The default value
+is `yyparse`.
+
+**YYPARSEFROM**
+
+The name of an alternative entry point to the parser. This
+function expects one argument: the function corresponding to the
+rule from which the search for a match should begin. The default
+is `yyparsefrom`. Note that `yyparse()` is defined as
 ```c
 int yyparse() { return yyparsefrom(yy_foo); }
 ```
 where ’foo’ is the name of the first rule in the grammar.
 
-**YY\_INPUT**  
-This macro is invoked by the parser to obtain more input text. *buf* points to an area of memory that can hold at most *max\_size* characters. The macro should copy input text to *buf* and then assign the integer variable *result* to indicate the number of characters copied. If no more input is available, the macro should assign 0 to *result*. By default, the YY\_INPUT macro is defined as follows.
+**YY\_INPUT(_buf_, _result_, _max\_size_)**
+
+This macro is invoked by the parser to obtain more input text.
+`buf` points to an area of memory that can hold at most
+`max_size` characters. The macro should copy input text to `buf`
+and then assign the integer variable `result` to indicate the
+number of characters copied. If no more input is available, the
+macro should assign 0 to `result`. By default, the `YY_INPUT`
+macro is defined as follows.
 ```c
 #define YY_INPUT(buf, result, max_size) \
 { \
@@ -510,36 +533,62 @@ This macro is invoked by the parser to obtain more input text. *buf* points to a
     result= (EOF == yyc) ? 0 : (*(buf)= yyc, 1); \
 }
 ```
-Note that if YY\_CTX\_LOCAL is defined (see below) then an additional first argument, containing the parser context, is passed to YY\_INPUT.
+Note that if `YY_CTX_LOCAL` is defined (see below) then an
+additional first argument, containing the parser context, is
+passed to `YY_INPUT`.
 
-**YY\_DEBUG**  
-If this symbols is defined then additional code will be included in the parser that prints vast quantities of arcane information to the standard error while the parser is running.
+**YY\_DEBUG**
 
-**YY\_BEGIN**  
-This macro is invoked to mark the start of input text that will be made available in actions as ’yytext’. This corresponds to occurrences of `<` in the grammar. These are converted into predicates that are expected to succeed. The default definition
+If this symbols is defined then additional code will be included
+in the parser that prints vast quantities of arcane information
+to the standard error while the parser is running.
+
+**YY\_BEGIN**
+
+This macro is invoked to mark the start of input text that will
+be made available in actions as `yytext`. This corresponds to
+occurrences of `<` in the grammar. These are converted into
+predicates that are expected to succeed. The default definition
 ```c
 #define YY_BEGIN (yybegin = yypos, 1)
 ```
-therefore saves the current input position and returns 1 (’true’) as the result of the predicate.
+therefore saves the current input position and returns 1 (’true’)
+as the result of the predicate.
 
-**YY\_END**  
-This macros corresponds to `<` in the grammar. Again, it is a predicate so the default definition saves the input position before ’succeeding’.
+**YY\_END**
+
+This macros corresponds to `>` in the grammar. Again, it is a
+predicate so the default definition saves the input position
+before ’succeeding’.
 ```c
 #define YY_END (yyend = yypos, 1)
 ```
 
-**YY\_PARSE(**T**)**  
-This macro declares the parser entry points (yyparse and yyparsefrom) to be of type *T*. The default definition
+**YY\_PARSE(_T_)**
+
+This macro declares the parser entry points (yyparse and
+yyparsefrom) to be of type *T*. The default definition
 ```c
 #define YY_PARSE(T) T
 ```
-leaves yyparse() and yyparsefrom() with global visibility. If they should not be externally visible in other source files, this macro can be redefined to declare them ’static’.
-```
-#define YY_PARSE(T) static T
+leaves `yyparse()` and `yyparsefrom()` with global visibility. If
+they should not be externally visible in other source files, this
+macro can be redefined to declare them ’static’.
+```c
+#define YY_PARSE(_T_) static T
 ```
 
-**YY\_CTX\_LOCAL**  
-If this symbol is defined during compilation of a generated parser then global parser state will be kept in a structure of type ’yycontext’ which can be declared as a local variable. This allows multiple instances of parsers to coexist and to be thread−safe. The parsing function *yyparse*() will be declared to expect a first argument of type ’yycontext \*’, an instance of the structure holding the global state for the parser. This instance must be allocated and initialised to zero by the client. A trivial but complete example is as follows.
+**YY\_CTX\_LOCAL**
+
+If this symbol is defined during compilation of a generated
+parser then global parser state will be kept in a structure of
+type `yycontext` which can be declared as a local variable. This
+allows multiple instances of parsers to coexist and to be
+thread−safe. The parsing function `yyparse()` will be declared to
+expect a first argument of type `yycontext*`, an instance of
+the structure holding the global state for the parser. This
+instance must be allocated and initialised to zero by the client.
+A trivial but complete example is as follows.
 ```c
 #include <stdio.h>
 
@@ -555,163 +604,227 @@ int main()
     return 0;
 }
 ```
-Note that if this symbol is undefined then the compiled parser will statically allocate its global state and will be neither reentrant nor thread−safe. Note also that the parser yycontext structure is initialised automatically the first time *yyparse*() is called; this structure **must** therefore be properly initialised to zero before the first call to *yyparse*().
+Note that if this symbol is undefined then the compiled parser
+will statically allocate its global state and will be neither
+reentrant nor thread−safe. Note also that the parser yycontext
+structure is initialised automatically the first time `yyparse()`
+is called; this structure **must** therefore be properly
+initialised to zero before the first call to `yyparse()`.
 
-**YY\_CTX\_MEMBERS**  
-If YY\_CTX\_LOCAL is defined (see above) then the macro YY\_CTX\_MEMBERS can be defined to expand to any additional member field declarations that the client would like included in the declaration of the ’yycontext’ structure type. These additional members are otherwise ignored by the generated parser. The instance of ’yycontext’ associated with the currently−active parser is available within actions as the pointer variable *yy*.
+**YY\_CTX\_MEMBERS**
 
-**YY\_BUFFER\_SIZE**  
-The initial size of the text buffer, in bytes. The default is 1024 and the buffer size is doubled whenever required to meet demand during parsing. An application that typically parses much longer strings could increase this to avoid unnecessary buffer reallocation.
+If `YY_CTX_LOCAL` is defined (see above) then the macro
+`YY_CTX_MEMBERS` can be defined to expand to any additional
+member field declarations that the client would like included in
+the declaration of the `yycontext` structure type. These
+additional members are otherwise ignored by the generated parser.
+The instance of ’yycontext’ associated with the currently−active
+parser is available within actions as the pointer variable
+`yy`.
 
-**YY\_STACK\_SIZE**  
-The initial size of the variable and action stacks. The default is 128, which is doubled whenever required to meet demand during parsing. Applications that have deep call stacks with many local variables, or that perform many actions after a single successful match, could increase this to avoid unnecessary buffer reallocation.
+**YY\_BUFFER\_SIZE**
 
-**YY\_MALLOC(**YY, SIZE**)**  
-The memory allocator for all parser−related storage. The parameters are the current yycontext structure and the number of bytes to allocate. The default definition is: malloc(*SIZE*)
+The initial size of the text buffer, in bytes. The default is
+1024 and the buffer size is doubled whenever required to meet
+demand during parsing. An application that typically parses much
+longer strings could increase this to avoid unnecessary buffer
+reallocation.
 
-**YY\_REALLOC(***YY***, ***PTR***, ***SIZE***)**
+**YY\_STACK\_SIZE**
 
-The memory reallocator for dynamically−grown storage (such as text buffers and variable stacks). The parameters are the current yycontext structure, the previously−allocated storage, and the number of bytes to which that storage should be grown. The default definition is: realloc(*PTR*, *SIZE*)
+The initial size of the variable and action stacks. The default
+is 128, which is doubled whenever required to meet demand during
+parsing. Applications that have deep call stacks with many local
+variables, or that perform many actions after a single successful
+match, could increase this to avoid unnecessary buffer
+reallocation.
 
-**YY\_FREE(***YY***, ***PTR***)**
+**YY\_MALLOC(_YY_, _SIZE_)**
+The memory allocator for all parser−related storage. The
+parameters are the current yycontext structure and the number of
+bytes to allocate. The default definition is: `malloc(SIZE)`
 
-The memory deallocator. The parameters are the current yycontext structure and the storage to deallocate. The default definition is: free(*PTR*)
+**YY\_REALLOC(_YY_, _PTR_, _SIZE_)**
+
+The memory reallocator for dynamically−grown storage (such as
+text buffers and variable stacks). The parameters are the current
+yycontext structure, the previously−allocated storage, and the
+number of bytes to which that storage should be grown. The
+default definition is: `realloc(PTR, SIZE)`
+
+**YY\_FREE(_YY_, _PTR_)**
+
+The memory deallocator. The parameters are the current yycontext
+structure and the storage to deallocate. The default definition
+is: `free(PTR)`
 
 **YYRELEASE**
 
-The name of the function that releases all resources held by a yycontext structure. The default value is ’yyrelease’.
+The name of the function that releases all resources held by a
+yycontext structure. The default value is ’yyrelease’.
 
-The following variables can be referred to within actions. **
- char \*yybuf**
+The following variables can be referred to within actions. 
 
-This variable points to the parser’s input buffer used to store input text that has not yet been matched.
+| Type        | Variable  | Description |
+| :-----      | :-------- | :---------- |
+| char*       | yybuf     | This variable points to the parser’s input buffer used to store input text that has not yet been matched. |
+| int         | yypos     | This is the offset (in yybuf) of the next character to be matched and consumed. |
+| char*       | yytext    | The most recent matched text delimited by `<` and `>` is stored in this variable. |
+| int         | yyleng    | This variable indicates the number of characters in `yytext`. |
+| yycontext*  | yy        | This variable points to the instance of `yycontext` associated with the currently−active parser. |
 
-**int yypos**
+Programs that wish to release all the resources associated with a
+parser can use the following function.
 
-This is the offset (in yybuf) of the next character to be matched and consumed.
+**yyrelease( _yycontext\*yy_)**
 
-**char \*yytext**
+Returns all parser−allocated storage associated with `yy` to the
+system. The storage will be reallocated on the next call to
+`yyparse()`.
 
-The most recent matched text delimited by ’\<’ and ’\>’ is stored in this variable.
+Note that the storage for the yycontext structure itself is never
+allocated or reclaimed implicitly. The application must allocate
+these structures in automatic storage, or use `calloc()` and
+`free()` to manage them explicitly. The example in the following
+section demonstrates one approach to resource management.
 
-**int yyleng**
-
-This variable indicates the number of characters in ’yytext’.
-
-**yycontext \*yy**
-
-This variable points to the instance of ’yycontext’ associated with the currently−active parser.
-
-Programs that wish to release all the resources associated with a parser can use the following function. **
- yyrelease(yycontext***\****yy***)*
-
-Returns all parser−allocated storage associated with *yy* to the system. The storage will be reallocated on the next call to *yyparse*().
-
-Note that the storage for the yycontext structure itself is never allocated or reclaimed implicitly. The application must allocate these structures in automatic storage, or use *calloc*() and *free*() to manage them explicitly. The example in the following section demonstrates one approach to resource management.
-
+<a name="LEG_EXAMPLE_EXTENDING_THE_PARSERS_CONTEXT"></a>
 LEG EXAMPLE: EXTENDING THE PARSER’S CONTEXT
 -------------------------------------------
 
-The *yy* variable passed to actions contains the state of the parser plus any additional fields defined by YY\_CTX\_MEMBERS. Theses fields can be used to store application−specific information that is global to a particular call of *yyparse*(). A trivial but complete *leg* example follows in which the yycontext structure is extended with a *count* of the number of newline characters seen in the input so far (the grammar otherwise consumes and ignores the entire input). The caller of *yyparse*() uses *count* to print the number of lines of input that were read.
-
+The `yy` variable passed to actions contains the state of the
+parser plus any additional fields defined by `YY_CTX_MEMBERS`.
+Theses fields can be used to store application−specific
+information that is global to a particular call of *yyparse*(). A
+trivial but complete *leg* example follows in which the yycontext
+structure is extended with a *count* of the number of newline
+characters seen in the input so far (the grammar otherwise
+consumes and ignores the entire input). The caller of `yyparse()`
+uses *count* to print the number of lines of input that were
+read.
+```c
 %{
- \#define YY\_CTX\_LOCAL 1
- \#define YY\_CTX\_MEMBERS \\
- int count;
- %}
+#define YY_CTX_LOCAL 1
+#define YY_CTX_MEMBERS \
+  int count;
+%}
 
-Char = (’\\n’ | ’\\r\\n’ | ’\\r’) { yy−\>count++ }
- | .
+Char    = ('\n' | '\r\n' | '\r')        { yy->count++ }
+        | .
 
 %%
 
-\#include \<stdio.h\>
- \#include \<string.h\>
+#include <stdio.h>
+#include <string.h>
 
 int main()
- {
- /\* create a local parser context in automatic storage \*/
- yycontext yy;
- /\* the context \*must\* be initialised to zero before first use\*/
- memset(&yy, 0, sizeof(yy));
+{
+   /* create a local parser context in automatic storage */
+   yycontext yy;
+   /* the context *must* be initialised to zero before first use*/
+   memset(&yy, 0, sizeof(yy));
 
-while (yyparse(&yy))
- ;
- printf("%d newlines\\n", yy.count);
+   while (yyparse(&yy))
+       ;
+   printf("%d newlines\n", yy.count);
 
-/\* release all resources associated with the context \*/
- yyrelease(&yy);
+   /* release all resources associated with the context */
+   yyrelease(&yy);
 
-return 0;
- }
+   return 0;
+}
+```
 
 DIAGNOSTICS
 -----------
 
-*peg* and *leg* warn about the following conditions while converting a grammar into a parser. **
- syntax error**
+*peg* and *leg* warn about the following conditions while converting a grammar into a parser. 
 
-The input grammar was malformed in some way. The error message will include the text about to be matched (often backed up a huge amount from the actual location of the error) and the line number of the most recently considered character (which is often the real location of the problem).
+**syntax error**
+
+The input grammar was malformed in some way. The error message
+will include the text about to be matched (often backed up a huge
+amount from the actual location of the error) and the line number
+of the most recently considered character (which is often the
+real location of the problem).
 
 **rule ’foo’ used but not defined**
 
-The grammar referred to a rule named ’foo’ but no definition for it was given. Attempting to use the generated parser will likely result in errors from the linker due to undefined symbols associated with the missing rule.
+The grammar referred to a rule named ’foo’ but no definition for
+it was given. Attempting to use the generated parser will likely
+result in errors from the linker due to undefined symbols
+associated with the missing rule.
 
 **rule ’foo’ defined but not used**
 
-The grammar defined a rule named ’foo’ and then ignored it. The code associated with the rule is included in the generated parser which will in all other respects be healthy.
+The grammar defined a rule named ’foo’ and then ignored it. The
+code associated with the rule is included in the generated parser
+which will in all other respects be healthy.
 
 **possible infinite left recursion in rule ’foo’**
 
-There exists at least one path through the grammar that leads from the rule ’foo’ back to (a recursive invocation of) the same rule without consuming any input.
+There exists at least one path through the grammar that leads
+from the rule ’foo’ back to (a recursive invocation of) the same
+rule without consuming any input.
 
-Left recursion, especially that found in standards documents, is often ’direct’ and implies trivial repetition.
+Left recursion, especially that found in standards documents, is
+often ’direct’ and implies trivial repetition.
+```
+# (6.7.6)
+direct-abstract-declarator =
+               LPAREN abstract-declarator RPAREN
+           |   direct-abstract-declarator? LBRACKET assign-expr? RBRACKET
+           |   direct-abstract-declarator? LBRACKET STAR RBRACKET
+           |   direct-abstract-declarator? LPAREN param-type-list? RPAREN
+```
+The recursion can easily be eliminated by converting the parts of
+the pattern following the recursion into a repeatable suffix.
+```
+# (6.7.6)
+direct-abstract-declarator =
+               direct-abstract-declarator-head?
+               direct-abstract-declarator-tail*
 
-\# (6.7.6)
- direct−abstract−declarator =
- LPAREN abstract−declarator RPAREN
- | direct−abstract−declarator? LBRACKET assign−expr? RBRACKET
- | direct−abstract−declarator? LBRACKET STAR RBRACKET
- | direct−abstract−declarator? LPAREN param−type−list? RPAREN
+direct-abstract-declarator-head =
+               LPAREN abstract-declarator RPAREN
 
-The recursion can easily be eliminated by converting the parts of the pattern following the recursion into a repeatable suffix.
-
-\# (6.7.6)
- direct−abstract−declarator =
- direct−abstract−declarator−head?
- direct−abstract−declarator−tail\*
-
-direct−abstract−declarator−head =
- LPAREN abstract−declarator RPAREN
-
-direct−abstract−declarator−tail =
- LBRACKET assign−expr? RBRACKET
- | LBRACKET STAR RBRACKET
- | LPAREN param−type−list? RPAREN
-
+direct-abstract-declarator-tail =
+               LBRACKET assign-expr? RBRACKET
+           |   LBRACKET STAR RBRACKET
+           |   LPAREN param-type-list? RPAREN
+```
 CAVEATS
 -------
 
-A parser that accepts empty input will *always* succeed. Consider the following example, not atypical of a first attempt to write a PEG−based parser:
-
-Program = Expression\*
- Expression = "whatever"
- %%
- int main() {
- while (yyparse())
- puts("success!");
- return 0;
- }
-
-This program loops forever, no matter what (if any) input is provided on stdin. Many fixes are possible, the easiest being to insist that the parser always consumes some non−empty input. Changing the first line to
-
+A parser that accepts empty input will *always* succeed. Consider
+the following example, not atypical of a first attempt to write a
+PEG−based parser:
+```c
+Program = Expression*
+Expression = "whatever"
+%%
+int main() {
+    while (yyparse())
+        puts("success!");
+    return 0;
+}
+```
+This program loops forever, no matter what (if any) input is
+provided on stdin. Many fixes are possible, the easiest being to
+insist that the parser always consumes some non−empty input.
+Changing the first line to
+```
 Program = Expression+
-
-accomplishes this. If the parser is expected to consume the entire input, then explicitly requiring the end−of−file is also highly recommended:
-
+```
+accomplishes this. If the parser is expected to consume the
+entire input, then explicitly requiring the end−of−file is also
+highly recommended:
+```
 Program = Expression+ !.
-
-This works because the parser will only fail to match ("!" predicate) any character at all ("." expression) when it attempts to read beyond the end of the input.
+```
+This works because the parser will only fail to match ("!"
+predicate) any character at all ("." expression) when it attempts
+to read beyond the end of the input.
 
 BUGS
 ----
@@ -730,6 +843,7 @@ Several commonly−used *lex*(1) features (yywrap(), yyin, etc.) are completely 
 
 The generated parser does not contain ’\#line’ directives to direct C compiler errors back to the grammar description when appropriate.
 
+<a name="SEE_ALSO"></a>
 SEE ALSO
 --------
 
