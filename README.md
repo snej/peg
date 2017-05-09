@@ -317,7 +317,6 @@ PARSER" below).
 single expression; to invoke an error action for any failure
 within a sequence, parentheses must be used to group the
 sequence into a single expression.
-
 ```
 rule = e1 e2 e3 ~{ error("e[12] ok; e3 has failed"); }
      | ...
@@ -326,7 +325,7 @@ rule = (e1 e2 e3) ~{ error("one of e[123] has failed"); }
      | ...
 ```
 
-** _pattern _ ; **
+**_pattern_ ;**
 
 A semicolon punctuator can
 optionally terminate a _pattern_.
@@ -338,7 +337,7 @@ section of the grammar. All _text_ following `%%` is copied
 verbatim to the generated C parser code _after_ the parser
 implementation code.
 
-** $$ = _value_ **
+**$$=_value_**
 
 A sub-rule can return a semantic _value_ from an action by
 assigning it to the pseudo&minus;variable `$$`. All semantic
