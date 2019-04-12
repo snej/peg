@@ -664,8 +664,10 @@ YY_LOCAL(void) yyPush(yycontext *yy, char *text, int count)\n\
   while (yy->__valslen <= yy->__val - yy->__vals)\n\
     {\n\
       long offset= yy->__val - yy->__vals;\n\
+      size_t oldlen = yy->__valslen;\n\
       yy->__valslen *= 2;\n\
       yy->__vals= (YYSTYPE *)YY_REALLOC(yy, yy->__vals, sizeof(YYSTYPE) * yy->__valslen);\n\
+      memset(&yy->__vals[oldlen], 0, sizeof(YYSTYPE) * oldlen);\n\
       yy->__val= yy->__vals + offset;\n\
     }\n\
 }\n\
@@ -697,6 +699,7 @@ YY_PARSE(int) YYPARSEFROM(YY_CTX_PARAM_ yyrule yystart)\n\
       yyctx->__thunks= (yythunk *)YY_MALLOC(yyctx, sizeof(yythunk) * yyctx->__thunkslen);\n\
       yyctx->__valslen= YY_STACK_SIZE;\n\
       yyctx->__vals= (YYSTYPE *)YY_MALLOC(yyctx, sizeof(YYSTYPE) * yyctx->__valslen);\n\
+      memset(yyctx->__vals, 0, sizeof(YYSTYPE) * yyctx->__valslen);\n\
       yyctx->__begin= yyctx->__end= yyctx->__pos= yyctx->__limit= yyctx->__thunkpos= 0;\n\
     }\n\
   yyctx->__begin= yyctx->__end= yyctx->__pos;\n\
