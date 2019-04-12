@@ -126,10 +126,33 @@ Node *makeCharacter(char *text)
   return node;
 }
 
-Node *makeString(char *text)
+Node *makeString(char *text, int doubleQuoted)
 {
   Node *node= newNode(String);
-  node->string.value= strdup(text);
+  if (doubleQuoted) {
+	  node->string.value= strdup(text);
+  } else {
+    // A string that was delimited by single quotes (') in the grammar may
+    // contain unescaped double quotes ("). These need to be escaped, because
+    // the string will later be written into the C code as a literal, as-is.
+    size_t len = strlen(text);
+    int extra = 0;
+    for (size_t i = 0; i < len; ++i) {
+      if (text[i] == '\\')
+        ++i;
+      else if (text[i] == '"')
+        ++extra;
+    }
+    node->string.value = malloc(len + extra + 1);
+    char *dst = node->string.value;
+    for (size_t i = 0; i <= len; ++i) {
+      if (text[i] == '\\')
+        *dst++ = text[i++];
+      else if (text[i] == '"')
+        *dst++ = '\\';
+      *dst++ = text[i];
+    }
+  }
   return node;
 }
 

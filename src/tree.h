@@ -88,7 +88,7 @@ extern Node *makeVariable(char *name);
 extern Node *makeName(Node *rule);
 extern Node *makeDot(void);
 extern Node *makeCharacter(char *text);
-extern Node *makeString(char *text);
+extern Node *makeString(char *text, int doubleQuoted);
 extern Node *makeClass(char *text);
 extern Node *makeAction(int lineNumber, char *text);
 extern Node *makeInline(char *text);

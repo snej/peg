@@ -105,7 +105,8 @@ primary=	identifier				{ push(makeVariable(yytext)); }
 			COLON identifier !EQUAL		{ Node *name= makeName(findRule(yytext));  name->name.variable= pop();  push(name); }
 |		identifier !EQUAL			{ push(makeName(findRule(yytext))); }
 |		OPEN expression CLOSE
-|		literal					{ push(makeString(yytext)); }
+|		literal_1				{ push(makeString(yytext, 0)); }
+|		literal_2				{ push(makeString(yytext, 1)); }
 |		class					{ push(makeClass(yytext)); }
 |		DOT					{ push(makeDot()); }
 |		action					{ push(makeAction(actionLine, yytext)); }
@@ -116,8 +117,8 @@ primary=	identifier				{ push(makeVariable(yytext)); }
 
 identifier=	< [-a-zA-Z_][-a-zA-Z_0-9]* > -
 
-literal=	['] < ( !['] char )* > ['] -
-|		["] < ( !["] char )* > ["] -
+literal_1=	['] < ( !['] char )* > ['] -
+literal_2=	["] < ( !["] char )* > ["] -
 
 class=		'[' < ( !']' range )* > ']' -
 
