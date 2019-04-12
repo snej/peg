@@ -163,7 +163,11 @@ static void Node_compile_c_ko(Node *node, int ko)
     case String:
       {
 	int len= strlen(node->string.value);
-	if (1 == len)
+	if (String == node->type && node->string.casefold)
+	  {
+    	    fprintf(output, "  if (!yymatchIString(yy, \"%s\")) goto l%d;", node->string.value, ko);
+	  } 
+	else if (1 == len)
 	  {
 	    if ('\'' == node->string.value[0])
 	      fprintf(output, "  if (!yymatchChar(yy, '\\'')) goto l%d;", ko);
@@ -558,11 +562,28 @@ YY_LOCAL(int) yymatchChar(yycontext *yy, int c)\n\
 \n\
 YY_LOCAL(int) yymatchString(yycontext *yy, const char *s)\n\
 {\n\
+int yysav= yy->__pos;\n\
+while (*s)\n\
+  {\n\
+    if (yy->__pos >= yy->__limit && !yyrefill(yy)) return 0;\n\
+    if (yy->__buf[yy->__pos] != *s)\n\
+      {\n\
+        yy->__pos= yysav;\n\
+        return 0;\n\
+      }\n\
+    ++s;\n\
+    ++yy->__pos;\n\
+  }\n\
+return 1;\n\
+}\n\
+\n\
+YY_LOCAL(int) yymatchIString(yycontext *yy, const char *s)\n\
+{\n\
   int yysav= yy->__pos;\n\
   while (*s)\n\
     {\n\
       if (yy->__pos >= yy->__limit && !yyrefill(yy)) return 0;\n\
-      if (yy->__buf[yy->__pos] != *s)\n\
+      if (tolower(yy->__buf[yy->__pos]) != *s)\n\
         {\n\
           yy->__pos= yysav;\n\
           return 0;\n\

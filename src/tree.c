@@ -16,6 +16,7 @@
  * Last edited: 2016-07-15 10:25:14 by piumarta on zora
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -126,7 +127,7 @@ Node *makeCharacter(char *text)
   return node;
 }
 
-Node *makeString(char *text, int doubleQuoted)
+Node *makeString(char *text, int doubleQuoted, int casefold)
 {
   Node *node= newNode(String);
   if (doubleQuoted) {
@@ -152,6 +153,11 @@ Node *makeString(char *text, int doubleQuoted)
         *dst++ = '\\';
       *dst++ = text[i];
     }
+  }
+  node->string.casefold = casefold;
+  if (casefold) {
+    for (char *ch = node->string.value; *ch; ++ch)
+      *ch = tolower(*ch);
   }
   return node;
 }
