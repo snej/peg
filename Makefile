@@ -54,10 +54,10 @@ check-peg : peg.peg-c .FORCE
 check-leg : leg.c .FORCE
 	diff src/leg.c leg.c
 
-peg.peg-c : src/peg.peg peg
+src/peg.peg-c : src/peg.peg peg
 	./peg -o $@ $<
 
-leg.c : src/leg.leg leg
+src/leg.c : src/leg.leg leg
 	./leg -o $@ $<
 
 new : newpeg newleg
