@@ -308,8 +308,10 @@ YY_LOCAL(void) yyPush(yycontext *yy, char *text, int count)
   while (yy->__valslen <= yy->__val - yy->__vals)
     {
       long offset= yy->__val - yy->__vals;
+      size_t oldlen = yy->__valslen;
       yy->__valslen *= 2;
       yy->__vals= (YYSTYPE *)YY_REALLOC(yy, yy->__vals, sizeof(YYSTYPE) * yy->__valslen);
+      memset(&yy->__vals[oldlen], 0, sizeof(YYSTYPE) * oldlen);
       yy->__val= yy->__vals + offset;
     }
 }
@@ -1365,6 +1367,7 @@ YY_PARSE(int) YYPARSEFROM(YY_CTX_PARAM_ yyrule yystart)
       yyctx->__thunks= (yythunk *)YY_MALLOC(yyctx, sizeof(yythunk) * yyctx->__thunkslen);
       yyctx->__valslen= YY_STACK_SIZE;
       yyctx->__vals= (YYSTYPE *)YY_MALLOC(yyctx, sizeof(YYSTYPE) * yyctx->__valslen);
+      memset(yyctx->__vals, 0, sizeof(YYSTYPE) * yyctx->__valslen);
       yyctx->__begin= yyctx->__end= yyctx->__pos= yyctx->__limit= yyctx->__thunkpos= 0;
     }
   yyctx->__begin= yyctx->__end= yyctx->__pos;
@@ -1539,15 +1542,18 @@ int main(int argc, char **argv)
 
   Rule_compile_c_header();
 
-  for (; headers;  headers= headers->next)
-    fprintf(output, "#line %i \"%s\"\n%s\n", headers->line, fileName, headers->text);
-
+  for (; headers;  headers= headers->next) {
+    if (!nolinesFlag)
+      fprintf(output, "#line %i \"%s\"\n", headers->line, fileName);
+    fprintf(output, "%s\n", headers->text);
+  }
+  
   if (rules)
     Rule_compile_c(rules, nolinesFlag);
 
   if (trailer) {
     if (!nolinesFlag)
-      fprintf(output, "#line %i \"%s\"\n", trailerLine, fileName, trailer);
+      fprintf(output, "#line %i \"%s\"\n", trailerLine, fileName);
     fprintf(output, "%s\n", trailer);
   }
 
