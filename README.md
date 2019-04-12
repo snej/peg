@@ -181,6 +181,96 @@ _lex_(1).)
 |   <    | An opening angle bracket always matches (consuming no input) and causes the parser to begin accumulating matched text. This text will be made available to actions in the variable _yytext_. |
 |   >    | A closing angle bracket always matches (consuming no input) and causes the parser to stop accumulating text for _yytext_.|
 
+
+The above elements can be made optional and/or repeatable with the
+following suffixes:
+
+**_element_ ?**
+
+The  element  is  optional.  If present on the input, it is consumed
+and the match succeeds.  If not present on the  input,  no
+text is consumed and the match succeeds anyway.
+
+**_element_ +**
+
+The element is repeatable.  If present on the input, one or more
+occurrences of element are consumed and the match succeeds.   If
+no  occurrences  of  element are present on the input, the match
+fails.
+
+**_element_ \***
+
+The element is optional  and  repeatable.   If  present  on  the
+input,  one  or more occurrences of element are consumed and the
+match succeeds.  If no occurrences of element are present on the
+input, the match succeeds anyway.
+
+The  above elements and suffixes can be converted into predicates (that
+match arbitrary input text and subsequently  succeed  or  fail  without
+consuming that input) with the following prefixes:
+
+**& _element_**
+
+The  predicate  succeeds  only if element can be matched.  Input
+text scanned while matching element is  not  consumed  from  the
+input and remains available for subsequent matching.
+
+**! _element_**
+
+The predicate succeeds only if element cannot be matched.  Input
+text scanned while matching element is  not  consumed  from  the
+input  and remains available for subsequent matching.  A popular
+idiom is `!.` which matches the end of file, after the last character  of  the
+input has already been consumed.
+
+A special form of the `&` predicate is provided:
+
+**&{ _expression_ }**
+
+In  this  predicate  the  simple C expression (not statement) is
+evaluated immediately when the parser reaches the predicate.  If
+the  expression  yields non-zero (true) the 'match' succeeds and
+the parser continues with the next element in the  pattern.   If
+the  expression  yields  zero  (false) the 'match' fails and the
+parser backs up to look for an alternative parse of the input.
+
+Several elements (with or without prefixes and suffixes)  can  be  
+combined  into a sequence by writing them one after the other.  The entire
+sequence matches only if each individual  element  within  it  matches,
+from left to right.
+
+Sequences  can  be separated into disjoint alternatives by the
+alternation operator `/`.
+
+**_sequence-1_ / _sequence-2_ / ... / _sequence-N_**
+
+Each sequence is tried in turn until one  of  them  matches,  at
+which  time  matching for the overall pattern succeeds.  If none
+of the sequences matches then the match of the  overall  pattern
+fails.
+
+Finally,  the pound sign (`#`) introduces a comment (discarded) that con-
+tinues until the end of the line.
+
+To summarise the above, the  parser  tries  to  match  the  input  text
+against  a  pattern  containing  literals,  names  (representing  other
+rules), and various operators (written as prefixes, suffixes,  juxtapo-
+sition  for  sequencing and and infix alternation operator) that modify
+how the elements within the pattern are matched.  Matches are made from
+left  to  right,  'descending' into named sub-rules as they are encoun-
+tered.  If  the  matching  process  fails,  the  parser  'back  tracks'
+('rewinding'  the input appropriately in the process) to find the near-
+est alternative 'path' through the grammar.  In other words the  parser
+performs  a  depth-first,  left-to-right  search for the first success-
+fully-matching path through the rules.  If found, the actions along the
+successful path are executed (in the order they were encountered).
+
+Note  that predicates are evaluated immediately during the search for a
+successful match, since they contribute to the success  or  failure  of
+the  search.   Actions,  however, are evaluated only after a successful
+match has been found.
+
+
 <a name="PEG_GRAMMAR_FOR_PEG_GRAMMARS">
 <h2>PEG GRAMMAR FOR PEG GRAMMARS</h2>
 </a>
