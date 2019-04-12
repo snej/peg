@@ -325,6 +325,13 @@ rule = (e1 e2 e3) ~{ error("one of e[123] has failed"); }
      | ...
 ```
 
+**"text"i or 'text'i**
+
+A quoted string immediately followed by a lowercase `i` is
+case-insensitive: it will match upper- and lower-case ASCII
+letters equivalently. This is useful for languages with
+case-insensitive keywords, such as SQL and Pascal.
+
 **_pattern_ ;**
 
 A semicolon punctuator can
