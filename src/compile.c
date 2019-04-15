@@ -138,6 +138,8 @@ static void label(int n)	{ fprintf(output, "\n  l%d:;\t", n); }
 static void jump(int n)		{ fprintf(output, "  goto l%d;", n); }
 static void save(int n)		{ fprintf(output, "  int yypos%d= yy->__pos, yythunkpos%d= yy->__thunkpos;", n, n); }
 static void restore(int n)	{ fprintf(output,     "  yy->__pos= yypos%d; yy->__thunkpos= yythunkpos%d;", n, n); }
+static void saveMaxPos(int n)	{ fprintf(output, "  int yymaxpos%d= yy->__maxpos;", n); }
+static void restoreMaxPos(int n){ fprintf(output,     "  yy->__maxpos= yymaxpos%d;", n); }
 
 static void Node_compile_c_ko(Node *node, int ko)
 {
@@ -269,10 +271,13 @@ static void Node_compile_c_ko(Node *node, int ko)
 	int ok= yyl();
 	begin();
 	save(ok);
+	saveMaxPos(ok);
 	Node_compile_c_ko(node->peekFor.element, ok);
+	restoreMaxPos(ok);
 	jump(ko);
 	label(ok);
 	restore(ok);
+	restoreMaxPos(ok);
 	end();
       }
       break;
@@ -476,6 +481,7 @@ struct _yycontext {\n\
   int       __buflen;\n\
   int       __pos;\n\
   int       __limit;\n\
+  int       __maxpos;\n\
   char     *__text;\n\
   int       __textlen;\n\
   int       __begin;\n\
@@ -541,10 +547,19 @@ YY_LOCAL(int) yyrefill(yycontext *yy)\n\
   return 1;\n\
 }\n\
 \n\
+YY_LOCAL(void) yyrecordMaxPos(yycontext *yy)\n\
+{\n\
+  if (yy->__pos > yy->__maxpos) {\n\
+    yy->__maxpos = yy->__pos;\n\
+    yyprintf((stderr, \"       maxpos=%d [after '%c']\\n\", yy->__maxpos, yy->__buf[yy->__maxpos-1]));\n\
+  }\n\
+}\n\
+\n\
 YY_LOCAL(int) yymatchDot(yycontext *yy)\n\
 {\n\
   if (yy->__pos >= yy->__limit && !yyrefill(yy)) return 0;\n\
   ++yy->__pos;\n\
+  yyrecordMaxPos(yy);\n\
   return 1;\n\
 }\n\
 \n\
@@ -554,6 +569,7 @@ YY_LOCAL(int) yymatchChar(yycontext *yy, int c)\n\
   if ((unsigned char)yy->__buf[yy->__pos] == c)\n\
     {\n\
       ++yy->__pos;\n\
+      yyrecordMaxPos(yy);\n\
       yyprintf((stderr, \"  ok   yymatchChar(yy, %c) @ %s\\n\", c, yy->__buf+yy->__pos));\n\
       return 1;\n\
     }\n\
@@ -563,19 +579,20 @@ YY_LOCAL(int) yymatchChar(yycontext *yy, int c)\n\
 \n\
 YY_LOCAL(int) yymatchString(yycontext *yy, const char *s)\n\
 {\n\
-int yysav= yy->__pos;\n\
-while (*s)\n\
-  {\n\
-    if (yy->__pos >= yy->__limit && !yyrefill(yy)) return 0;\n\
-    if (yy->__buf[yy->__pos] != *s)\n\
-      {\n\
-        yy->__pos= yysav;\n\
-        return 0;\n\
-      }\n\
-    ++s;\n\
-    ++yy->__pos;\n\
-  }\n\
-return 1;\n\
+  int yysav= yy->__pos;\n\
+  while (*s)\n\
+    {\n\
+      if (yy->__pos >= yy->__limit && !yyrefill(yy)) return 0;\n\
+      if (yy->__buf[yy->__pos] != *s)\n\
+	{\n\
+	  yy->__pos= yysav;\n\
+	  return 0;\n\
+	}\n\
+      ++s;\n\
+      ++yy->__pos;\n\
+    }\n\
+  yyrecordMaxPos(yy);\n\
+  return 1;\n\
 }\n\
 \n\
 YY_LOCAL(int) yymatchIString(yycontext *yy, const char *s)\n\
@@ -592,6 +609,7 @@ YY_LOCAL(int) yymatchIString(yycontext *yy, const char *s)\n\
       ++s;\n\
       ++yy->__pos;\n\
     }\n\
+  yyrecordMaxPos(yy);\n\
   return 1;\n\
 }\n\
 \n\
@@ -603,6 +621,7 @@ YY_LOCAL(int) yymatchClass(yycontext *yy, unsigned char *bits)\n\
   if (bits[c >> 3] & (1 << (c & 7)))\n\
     {\n\
       ++yy->__pos;\n\
+      yyrecordMaxPos(yy);\n\
       yyprintf((stderr, \"  ok   yymatchClass @ %s\\n\", yy->__buf+yy->__pos));\n\
       return 1;\n\
     }\n\
@@ -722,7 +741,7 @@ YY_PARSE(int) YYPARSEFROM(YY_CTX_PARAM_ yyrule yystart)\n\
       yyctx->__valslen= YY_STACK_SIZE;\n\
       yyctx->__vals= (YYSTYPE *)YY_MALLOC(yyctx, sizeof(YYSTYPE) * yyctx->__valslen);\n\
       memset(yyctx->__vals, 0, sizeof(YYSTYPE) * yyctx->__valslen);\n\
-      yyctx->__begin= yyctx->__end= yyctx->__pos= yyctx->__limit= yyctx->__thunkpos= 0;\n\
+      yyctx->__begin= yyctx->__end= yyctx->__pos= yyctx->__limit= yyctx->__maxpos= yyctx->__thunkpos= 0;\n\
     }\n\
   yyctx->__begin= yyctx->__end= yyctx->__pos;\n\
   yyctx->__thunkpos= 0;\n\
