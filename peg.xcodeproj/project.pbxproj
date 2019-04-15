@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -48,13 +48,51 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		27FA3C119507A9A914A66936 /* peg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = src/peg.c; sourceTree = "<group>"; };
+		276CE6072265017C00B681AC /* tree.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		276CE6082265017C00B681AC /* version.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		276CE6092265017C00B681AC /* leg.leg */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = text; path = leg.leg; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		276CE60A2265017C00B681AC /* peg.peg */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = text; path = peg.peg; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		276CE60B2265023000B681AC /* peg.peg-c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = text; path = "peg.peg-c"; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		276CE60E2265056300B681AC /* wc.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = wc.leg; sourceTree = "<group>"; };
+		276CE60F2265056300B681AC /* dc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dc.c; sourceTree = "<group>"; };
+		276CE6102265056300B681AC /* fibonacci.bas */ = {isa = PBXFileReference; lastKnownFileType = text; path = fibonacci.bas; sourceTree = "<group>"; };
+		276CE6112265056300B681AC /* basic.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = basic.leg; sourceTree = "<group>"; };
+		276CE6122265056300B681AC /* rule.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rule.c; sourceTree = "<group>"; };
+		276CE6132265056300B681AC /* accept.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = accept.peg; sourceTree = "<group>"; };
+		276CE6142265056300B681AC /* dcv.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dcv.c; sourceTree = "<group>"; };
+		276CE6152265056300B681AC /* localleg.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = localleg.ref; sourceTree = "<group>"; };
+		276CE6162265056300B681AC /* test.bas */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.bas; sourceTree = "<group>"; };
+		276CE6172265056300B681AC /* erract.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = erract.ref; sourceTree = "<group>"; };
+		276CE6182265056300B681AC /* calc.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = calc.ref; sourceTree = "<group>"; };
+		276CE6192265056300B681AC /* localpeg.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = localpeg.ref; sourceTree = "<group>"; };
+		276CE61B2265056300B681AC /* rule.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = rule.ref; sourceTree = "<group>"; };
+		276CE61C2265056300B681AC /* dcv.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = dcv.ref; sourceTree = "<group>"; };
+		276CE61D2265056300B681AC /* left.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = left.c; sourceTree = "<group>"; };
+		276CE61E2265056300B681AC /* dc.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = dc.peg; sourceTree = "<group>"; };
+		276CE61F2265056300B681AC /* test.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.peg; sourceTree = "<group>"; };
+		276CE6202265056300B681AC /* left.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = left.peg; sourceTree = "<group>"; };
+		276CE6212265056300B681AC /* bench.bas */ = {isa = PBXFileReference; lastKnownFileType = text; path = bench.bas; sourceTree = "<group>"; };
+		276CE6222265056300B681AC /* basic.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = basic.ref; sourceTree = "<group>"; };
+		276CE6232265056300B681AC /* accept.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = accept.c; sourceTree = "<group>"; };
+		276CE6242265056300B681AC /* username.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = username.leg; sourceTree = "<group>"; };
+		276CE6252265056300B681AC /* calc.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = calc.leg; sourceTree = "<group>"; };
+		276CE6262265056300B681AC /* localpeg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = localpeg.c; sourceTree = "<group>"; };
+		276CE6272265056300B681AC /* localleg.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = localleg.leg; sourceTree = "<group>"; };
+		276CE6282265056300B681AC /* erract.leg */ = {isa = PBXFileReference; lastKnownFileType = text; path = erract.leg; sourceTree = "<group>"; };
+		276CE6292265056300B681AC /* wc.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = wc.ref; sourceTree = "<group>"; };
+		276CE62A2265056300B681AC /* accept.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = accept.ref; sourceTree = "<group>"; };
+		276CE62B2265056300B681AC /* test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		276CE62C2265056300B681AC /* rule.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = rule.peg; sourceTree = "<group>"; };
+		276CE62D2265056300B681AC /* dcv.peg */ = {isa = PBXFileReference; lastKnownFileType = text; path = dcv.peg; sourceTree = "<group>"; };
+		276CE62E2265056300B681AC /* test.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.ref; sourceTree = "<group>"; };
+		276CE62F2265056300B681AC /* dc.ref */ = {isa = PBXFileReference; lastKnownFileType = text; path = dc.ref; sourceTree = "<group>"; };
+		27FA3C119507A9A914A66936 /* peg.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = peg.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		4165F882B6F541E12DBD6A0D /* peg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = peg; sourceTree = BUILT_PRODUCTS_DIR; };
-		454F9F599E7B65F90C62CF9C /* leg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = src/leg.c; sourceTree = "<group>"; };
+		454F9F599E7B65F90C62CF9C /* leg.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = leg.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		5C991B5472A7498A982B7350 /* peg.gyp */ = {isa = PBXFileReference; lastKnownFileType = text; path = peg.gyp; sourceTree = "<group>"; };
 		C9B3F1D07DD720C50DE87DC5 /* leg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = leg; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4BAF07C3AF28E51DD58E853 /* compile.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = src/compile.c; sourceTree = "<group>"; };
-		E503317C684EFEB3E7E03861 /* tree.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = src/tree.c; sourceTree = "<group>"; };
+		D4BAF07C3AF28E51DD58E853 /* compile.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = compile.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		E503317C684EFEB3E7E03861 /* tree.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = tree.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +113,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		276CE60C226504EF00B681AC /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				D4BAF07C3AF28E51DD58E853 /* compile.c */,
+				E503317C684EFEB3E7E03861 /* tree.c */,
+				276CE6072265017C00B681AC /* tree.h */,
+				276CE6082265017C00B681AC /* version.h */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
+		};
+		276CE60D2265056300B681AC /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				276CE6302265058E00B681AC /* BASIC */,
+				276CE6232265056300B681AC /* accept.c */,
+				276CE6132265056300B681AC /* accept.peg */,
+				276CE62A2265056300B681AC /* accept.ref */,
+				276CE6252265056300B681AC /* calc.leg */,
+				276CE6182265056300B681AC /* calc.ref */,
+				276CE60F2265056300B681AC /* dc.c */,
+				276CE61E2265056300B681AC /* dc.peg */,
+				276CE62F2265056300B681AC /* dc.ref */,
+				276CE6142265056300B681AC /* dcv.c */,
+				276CE62D2265056300B681AC /* dcv.peg */,
+				276CE61C2265056300B681AC /* dcv.ref */,
+				276CE6282265056300B681AC /* erract.leg */,
+				276CE6172265056300B681AC /* erract.ref */,
+				276CE61D2265056300B681AC /* left.c */,
+				276CE6202265056300B681AC /* left.peg */,
+				276CE6272265056300B681AC /* localleg.leg */,
+				276CE6152265056300B681AC /* localleg.ref */,
+				276CE6262265056300B681AC /* localpeg.c */,
+				276CE6192265056300B681AC /* localpeg.ref */,
+				276CE6122265056300B681AC /* rule.c */,
+				276CE62C2265056300B681AC /* rule.peg */,
+				276CE61B2265056300B681AC /* rule.ref */,
+				276CE62B2265056300B681AC /* test.c */,
+				276CE61F2265056300B681AC /* test.peg */,
+				276CE62E2265056300B681AC /* test.ref */,
+				276CE6242265056300B681AC /* username.leg */,
+				276CE60E2265056300B681AC /* wc.leg */,
+				276CE6292265056300B681AC /* wc.ref */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
+		276CE6302265058E00B681AC /* BASIC */ = {
+			isa = PBXGroup;
+			children = (
+				276CE6112265056300B681AC /* basic.leg */,
+				276CE6222265056300B681AC /* basic.ref */,
+				276CE6212265056300B681AC /* bench.bas */,
+				276CE6102265056300B681AC /* fibonacci.bas */,
+				276CE6162265056300B681AC /* test.bas */,
+			);
+			name = BASIC;
+			sourceTree = "<group>";
+		};
+		276CE63122651F6400B681AC /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				276CE60B2265023000B681AC /* peg.peg-c */,
+				454F9F599E7B65F90C62CF9C /* leg.c */,
+			);
+			name = Generated;
+			sourceTree = "<group>";
+		};
 		3854A05A8AE7E9B329F09174 /* Build */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,10 +193,14 @@
 			isa = PBXGroup;
 			children = (
 				E2D71C5771542F758C302162 /* Source */,
+				276CE60D2265056300B681AC /* examples */,
 				AF64E60ED33C9E5DC5DB4C21 /* Products */,
 				3854A05A8AE7E9B329F09174 /* Build */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 8;
+			usesTabs = 1;
 		};
 		AF64E60ED33C9E5DC5DB4C21 /* Products */ = {
 			isa = PBXGroup;
@@ -104,12 +214,14 @@
 		E2D71C5771542F758C302162 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				D4BAF07C3AF28E51DD58E853 /* compile.c */,
-				454F9F599E7B65F90C62CF9C /* leg.c */,
+				276CE60C226504EF00B681AC /* Shared */,
+				276CE60A2265017C00B681AC /* peg.peg */,
 				27FA3C119507A9A914A66936 /* peg.c */,
-				E503317C684EFEB3E7E03861 /* tree.c */,
+				276CE6092265017C00B681AC /* leg.leg */,
+				276CE63122651F6400B681AC /* Generated */,
 			);
 			name = Source;
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,7 +269,11 @@
 			};
 			buildConfigurationList = 283B121430353A60CB56914F /* Build configuration list for PBXProject "peg" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = AB7FD4EAF4FFE1A1CE63E31B;
 			projectDirPath = "";
 			projectRoot = "";
