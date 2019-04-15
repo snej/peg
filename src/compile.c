@@ -406,6 +406,7 @@ static void Rule_compile_c2(Node *node)
 }
 
 static char *header= "\
+#include <ctype.h>\n\
 #include <stdio.h>\n\
 #include <stdlib.h>\n\
 #include <string.h>\n\
