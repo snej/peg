@@ -415,6 +415,9 @@ static char *header= "\
 #include <stdio.h>\n\
 #include <stdlib.h>\n\
 #include <string.h>\n\
+#ifdef __cplusplus\n\
+  #include <vector>\n\
+#endif\n\
 ";
 
 static char *preamble= "\
@@ -492,8 +495,12 @@ struct _yycontext {\n\
   int       __thunkpos;\n\
   YYSTYPE   __;\n\
   YYSTYPE  *__val;\n\
+#ifdef __cplusplus\n\
+  std::vector<YYSTYPE>* __vals;\n\
+#else\n\
   YYSTYPE  *__vals;\n\
   int       __valslen;\n\
+#endif\n\
 #ifdef YY_CTX_MEMBERS\n\
   YY_CTX_MEMBERS\n\
 #endif\n\
@@ -701,6 +708,10 @@ YY_LOCAL(int) yyAccept(yycontext *yy, int tp0)\n\
 \n\
 YY_LOCAL(void) yyPush(yycontext *yy, char *text, int count)\n\
 {\n\
+#ifdef __cplusplus\n\
+  yy->__vals->resize(yy->__vals->size() + count);\n\
+  yy->__val = &yy->__vals->back();\n\
+#else\n\
   yy->__val += count;\n\
   while (yy->__valslen <= yy->__val - yy->__vals)\n\
     {\n\
@@ -711,8 +722,17 @@ YY_LOCAL(void) yyPush(yycontext *yy, char *text, int count)\n\
       memset(&yy->__vals[oldlen], 0, sizeof(YYSTYPE) * oldlen);\n\
       yy->__val= yy->__vals + offset;\n\
     }\n\
+#endif\n\
 }\n\
-YY_LOCAL(void) yyPop(yycontext *yy, char *text, int count)   { yy->__val -= count; }\n\
+YY_LOCAL(void) yyPop(yycontext *yy, char *text, int count)\n\
+{\n\
+#ifdef __cplusplus\n\
+  yy->__vals->resize(yy->__vals->size() - count);\n\
+  yy->__val = &yy->__vals->back();\n\
+#else\n\
+  yy->__val -= count;\n\
+#endif\n\
+}\n\
 YY_LOCAL(void) yySet(yycontext *yy, char *text, int count)   { yy->__val[count]= yy->__; }\n\
 \n\
 #endif /* YY_PART */\n\
@@ -738,14 +758,24 @@ YY_PARSE(int) YYPARSEFROM(YY_CTX_PARAM_ yyrule yystart)\n\
       yyctx->__text= (char *)YY_MALLOC(yyctx, yyctx->__textlen);\n\
       yyctx->__thunkslen= YY_STACK_SIZE;\n\
       yyctx->__thunks= (yythunk *)YY_MALLOC(yyctx, sizeof(yythunk) * yyctx->__thunkslen);\n\
-      yyctx->__valslen= YY_STACK_SIZE;\n\
+#ifdef __cplusplus\n\
+      yyctx->__vals = new std::vector<YYSTYPE>();\n\
+      yyctx->__vals->reserve(YY_STACK_SIZE);\n\
+#else\n\
+`     yyctx->__valslen= YY_STACK_SIZE;\n\
       yyctx->__vals= (YYSTYPE *)YY_MALLOC(yyctx, sizeof(YYSTYPE) * yyctx->__valslen);\n\
       memset(yyctx->__vals, 0, sizeof(YYSTYPE) * yyctx->__valslen);\n\
+#endif\n\
       yyctx->__begin= yyctx->__end= yyctx->__pos= yyctx->__limit= yyctx->__maxpos= yyctx->__thunkpos= 0;\n\
     }\n\
   yyctx->__begin= yyctx->__end= yyctx->__pos;\n\
   yyctx->__thunkpos= 0;\n\
+#ifdef __cplusplus\n\
+  yyctx->__vals->resize(1);\n\
+  yyctx->__val = &yyctx->__vals->back();\n\
+#else\n\
   yyctx->__val= yyctx->__vals;\n\
+#endif\n\
   yyok= yystart(yyctx);\n\
   if (yyok) yyDone(yyctx);\n\
   yyCommit(yyctx);\n\
@@ -765,7 +795,11 @@ YY_PARSE(yycontext *) YYRELEASE(yycontext *yyctx)\n\
       YY_FREE(yyctx, yyctx->__buf);\n\
       YY_FREE(yyctx, yyctx->__text);\n\
       YY_FREE(yyctx, yyctx->__thunks);\n\
+#ifdef __cplusplus\n\
+      delete yyctx->__vals;\n\
+#else\n\
       YY_FREE(yyctx, yyctx->__vals);\n\
+#endif\n\
     }\n\
   return yyctx;\n\
 }\n\
