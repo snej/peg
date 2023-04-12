@@ -183,9 +183,12 @@ Node *makeAction(int lineNumber, char *text)
   actions= node;
   {
     char *ptr;
-    for (ptr= node->action.text;  *ptr;  ++ptr)
-      if ('$' == ptr[0] && '$' == ptr[1])
-	ptr[1]= ptr[0]= '_';
+    for (ptr= node->action.text;  *ptr;  ++ptr) {
+      if ('$' == ptr[0] && '$' == ptr[1]) {
+        ptr[0] = 'y';
+        ptr[1] = '_';
+      }
+    }
   }
   return node;
 }
