@@ -1,3 +1,13 @@
+# PEG++ ?
+
+This is a fork of Ian Piumarta's original `peg` tool with some enhancements:
+- The generated C code compiles cleanly as C++, which means actions in a grammar can be written in C++.
+- Case-insensitive string token matching: just put an `i` immediately after a string literal.
+- Improved error handling: a new field `__maxpos` in the `yycontext` points just past the farthest character successfully matched, which is a reasonable position to show the user as where the error occurred.
+- Fixed a crashing bug parsing certain string literals.
+
+----
+
 PEG
 ===
 
