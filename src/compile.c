@@ -156,7 +156,7 @@ static void Node_compile_c_ko(Node *node, int ko)
       break;
 
     case Name:
-      fprintf(output, "  if (!yy_%s(yy)) goto l%d;", node->name.rule->rule.name, ko);
+      fprintf(output, "  if (!yyr%s(yy)) goto l%d;", node->name.rule->rule.name, ko);
       if (node->name.variable)
 	fprintf(output, "  yyDo(yy, yySet, %d, 0);", node->name.variable->variable.offset);
       break;
@@ -386,7 +386,7 @@ static void Rule_compile_c2(Node *node)
 
       safe= ((Query == node->rule.expression->type) || (Star == node->rule.expression->type));
 
-      fprintf(output, "\nYY_RULE(int) yy_%s(yycontext *yy)\n{", node->rule.name);
+      fprintf(output, "\nYY_RULE(int) yyr%s(yycontext *yy)\n{", node->rule.name);
       if (!safe) save(0);
       if (node->rule.variables)
 	fprintf(output, "  yyDo(yy, yyPush, %d, 0);", countVariables(node->rule.variables));
@@ -784,7 +784,7 @@ YY_PARSE(int) YYPARSEFROM(YY_CTX_PARAM_ yyrule yystart)\n\
 \n\
 YY_PARSE(int) YYPARSE(YY_CTX_PARAM)\n\
 {\n\
-  return YYPARSEFROM(YY_CTX_ARG_ yy_%s);\n\
+  return YYPARSEFROM(YY_CTX_ARG_ yyr%s);\n\
 }\n\
 \n\
 YY_PARSE(yycontext *) YYRELEASE(yycontext *yyctx)\n\
@@ -887,7 +887,7 @@ void Rule_compile_c(Node *node, int nolines)
 
   fprintf(output, "%s", preamble);
   for (n= node;  n;  n= n->rule.next)
-    fprintf(output, "YY_RULE(int) yy_%s(yycontext *yy); /* %d */\n", n->rule.name, n->rule.id);
+    fprintf(output, "YY_RULE(int) yyr%s(yycontext *yy); /* %d */\n", n->rule.name, n->rule.id);
   fprintf(output, "\n");
   for (n= actions;  n;  n= n->action.list)
     {
